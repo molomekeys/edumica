@@ -1,4 +1,4 @@
-import { PanelLeftClose } from 'lucide-react';
+import { ChevronRight, PanelLeftClose } from 'lucide-react';
 import type { Section } from '@/components/test-blanc/types';
 import { IconeEpreuve } from '@/components/icone-epreuve';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, useSidebar } from '@/components/ui/sidebar';
@@ -30,8 +30,23 @@ export function VoletQuestions({
     const { isMobile, setOpen, setOpenMobile } = useSidebar();
 
     return (
-        <Sidebar collapsible="offcanvas" aria-label="Liste des questions">
-            <SidebarHeader className="h-16 flex-row items-center justify-between gap-2 border-b border-sidebar-border px-4">
+        <Sidebar collapsible="icon" aria-label="Liste des questions">
+            {/* Volet replié (grand écran) : une fine bande reste visible, la flèche le rouvre. */}
+            <div className="hidden flex-col items-center gap-4 pt-4 group-data-[collapsible=icon]:flex">
+                <button
+                    type="button"
+                    onClick={() => setOpen(true)}
+                    aria-label="Afficher la liste des questions"
+                    className="flex size-9 items-center justify-center rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                >
+                    <ChevronRight className="size-5" />
+                </button>
+                <span className="text-xs font-bold text-sidebar-foreground/70 tabular-nums [writing-mode:vertical-rl]">
+                    {repondues} / {total}
+                </span>
+            </div>
+
+            <SidebarHeader className="h-16 group-data-[collapsible=icon]:hidden flex-row items-center justify-between gap-2 border-b border-sidebar-border px-4">
                 <div className="flex flex-col">
                     <span className="text-[15px] font-extrabold">Questions</span>
                     <span className="text-xs font-semibold text-sidebar-foreground/65 tabular-nums">
@@ -48,7 +63,7 @@ export function VoletQuestions({
                 </button>
             </SidebarHeader>
 
-            <SidebarContent className="gap-5 px-4 py-4">
+            <SidebarContent className="gap-5 px-4 py-4 group-data-[collapsible=icon]:hidden">
                 {sections.map((section, s) => (
                     <section key={section.epreuve?.id ?? s} className="flex flex-col gap-3.5">
                         {complet && section.epreuve && (
@@ -103,7 +118,7 @@ export function VoletQuestions({
                 ))}
             </SidebarContent>
 
-            <SidebarFooter className="flex-row flex-wrap gap-x-4 gap-y-1.5 border-t border-sidebar-border px-4 py-3 text-xs text-sidebar-foreground/70">
+            <SidebarFooter className="group-data-[collapsible=icon]:hidden flex-row flex-wrap gap-x-4 gap-y-1.5 border-t border-sidebar-border px-4 py-3 text-xs text-sidebar-foreground/70">
                 <div className="flex items-center gap-1.5">
                     <span className="size-3 rounded bg-menthe" />
                     Répondue
