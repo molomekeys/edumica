@@ -16,7 +16,7 @@
         </nav>
 
         <div class="flex items-center gap-2">
-            <div class="flex size-9 items-center justify-center rounded-full bg-menthe text-sm font-bold text-foret" title="{{ $user->name }}">{{ $user->initiales() }}</div>
+            <div class="hidden size-9 items-center justify-center rounded-full bg-menthe text-sm font-bold text-foret sm:flex" title="{{ $user->name }}">{{ $user->initiales() }}</div>
             <form method="POST" action="{{ route('deconnexion') }}">
                 @csrf
                 <button type="submit" class="rounded-xl px-3 py-2 text-sm font-semibold text-mousse hover:bg-brume hover:text-foret">Déconnexion</button>
