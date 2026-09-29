@@ -61,12 +61,14 @@ document.addEventListener('alpine:init', () => {
     /**
      * Lecteur « une seule écoute ». Lit le fichier audio s'il existe,
      * sinon fait lire la transcription par la synthèse vocale du navigateur.
+     * « ecoutee » : l'écoute a déjà eu lieu, le lecteur démarre verrouillé.
+     * « surDebut » : appelé au lancement, pour que le verrou survive à la navigation.
      */
-    window.Alpine.data('lecteur', ({ source, transcription, duree }) => ({
+    window.Alpine.data('lecteur', ({ source, transcription, duree, ecoutee = false }, surDebut = null) => ({
         duree,
-        position: 0,
+        position: ecoutee ? duree : 0,
         enLecture: false,
-        fini: false,
+        fini: ecoutee,
         audio: null,
         minuteur: null,
 
@@ -81,6 +83,7 @@ document.addEventListener('alpine:init', () => {
         jouer() {
             if (this.enLecture || this.fini) return;
             this.enLecture = true;
+            surDebut?.();
 
             if (source) {
                 this.audio = new Audio(source);
