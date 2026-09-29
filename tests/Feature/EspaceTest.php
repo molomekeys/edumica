@@ -75,6 +75,44 @@ class EspaceTest extends TestCase
             ->assertSet('reponses', [0 => $premiere->bonne_reponse]);
     }
 
+    public function test_le_test_complet_enchaine_toutes_les_epreuves(): void
+    {
+        $this->actingAs(User::factory()->create());
+        $avecQuestions = Epreuve::has('questions')->orderBy('ordre')->get();
+
+        $this->get('/espace')->assertOk()->assertSee('Commencer le test complet');
+        $this->get(route('test-blanc.complet'))->assertOk()->assertSee('Toutes les épreuves');
+
+        $test = Livewire::test('pages::test-blanc');
+        $ids = $test->get('ids');
+
+        // Toutes les questions, épreuve par épreuve, avec un chrono qui cumule leurs durées.
+        $this->assertCount(Question::count(), $ids);
+        $ordre = Question::findMany($ids)->sortBy(fn ($q) => array_search($q->id, $ids))->pluck('epreuve_id')->unique()->values();
+        $this->assertSame($avecQuestions->pluck('id')->all(), $ordre->all());
+        $this->assertEqualsWithDelta(now()->addMinutes($avecQuestions->sum('duree_test'))->getTimestamp(), $test->get('fin'), 2);
+
+        $premiere = Question::find($ids[0]);
+        $test->call('choisir', $premiere->bonne_reponse)
+            ->call('terminer')
+            ->assertSee('Par épreuve')
+            ->assertSee($avecQuestions->last()->nom);
+
+        $this->assertSame(1, $test->instance()->resultat['bonnes']);
+        $this->assertSame($avecQuestions->pluck('id')->all(), array_keys($test->instance()->resultat['epreuves']));
+    }
+
+    public function test_abandonner_le_test_ramene_a_l_espace(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        Livewire::test('pages::test-blanc', ['epreuve' => Epreuve::where('code', 'ce')->first()])
+            ->assertSee('Abandonner')
+            ->assertDontSee('Quitter le test blanc')
+            ->call('abandonner')
+            ->assertRedirect(route('espace'));
+    }
+
     public function test_l_admin_modifie_et_cree_des_questions(): void
     {
         $this->actingAs(User::factory()->create(['is_admin' => true]));

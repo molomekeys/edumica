@@ -16,6 +16,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/deconnexion', [ConnexionController::class, 'deconnexion'])->name('deconnexion');
 
     Route::livewire('/espace', 'pages::espace')->name('espace');
+    Route::livewire('/test-blanc', 'pages::test-blanc')->name('test-blanc.complet');
     Route::livewire('/test-blanc/{epreuve}', 'pages::test-blanc')->name('test-blanc');
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
