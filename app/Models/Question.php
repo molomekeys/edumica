@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
-#[Fillable(['epreuve_id', 'categorie', 'enonce', 'support', 'audio', 'duree_audio', 'transcription', 'choix', 'bonne_reponse', 'feedback', 'explication', 'ordre'])]
+#[Fillable(['epreuve_id', 'categorie', 'niveau', 'sous_niveau', 'enonce', 'support', 'audio', 'duree_audio', 'transcription', 'choix', 'bonne_reponse', 'feedback', 'explication', 'ordre'])]
 class Question extends Model
 {
     protected function casts(): array
