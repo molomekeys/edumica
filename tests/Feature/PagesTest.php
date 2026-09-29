@@ -25,7 +25,7 @@ class PagesTest extends TestCase
     public function test_les_pages_s_affichent(): void
     {
         $this->get('/')->assertOk()->assertSee('Sache ton')->assertSee('Compréhension orale');
-        $this->get('/quiz/comprehension-orale')->assertOk()->assertSee('Valider ma réponse');
+        $this->get('/quiz/comprehension-orale')->assertOk()->assertSee('Question suivante');
         $this->get('/quiz/expression-orale')->assertOk()->assertSee('Pas encore de quiz');
         $this->get('/bilan')->assertOk()->assertSee('Presque NCLC 7 partout.');
         $this->get('/quiz/inconnue')->assertNotFound();
@@ -108,31 +108,56 @@ class PagesTest extends TestCase
         Mail::assertNothingSent();
     }
 
-    public function test_un_quiz_se_deroule_jusqu_au_resultat(): void
+    public function test_un_quiz_se_deroule_et_la_correction_arrive_a_la_fin(): void
     {
         $epreuve = Epreuve::where('code', 'co')->first();
         $quiz = Livewire::test('pages::quiz', ['epreuve' => $epreuve]);
-        $total = count($quiz->get('ids'));
+        $ids = $quiz->get('ids');
+        $total = count($ids);
 
-        // Valider sans choix ne fait rien.
-        $quiz->call('valider')->assertSet('corrige', false);
+        // Continuer sans choix ne fait rien.
+        $quiz->call('suivante')->assertSet('index', 0);
 
-        $question = $epreuve->questions()->find($quiz->get('ids')[0]);
-        $quiz->call('choisir', $question->bonne_reponse)
-            ->call('valider')
-            ->assertSet('corrige', true)
-            ->assertSee('Bonne réponse')
-            ->assertSee($question->explication)
+        $premiere = $epreuve->questions()->find($ids[0]);
+        $quiz->call('choisir', $premiere->bonne_reponse)
             ->call('suivante')
-            ->assertSet('index', 1);
+            ->assertSet('index', 1)
+            ->assertDontSee($premiere->explication);
 
-        for ($i = 1; $i < $total; $i++) {
+        $deuxieme = $epreuve->questions()->find($ids[1]);
+        $quiz->call('choisir', ($deuxieme->bonne_reponse + 1) % count($deuxieme->choix))
+            ->call('suivante')
+            ->assertSet('index', 2)
+            ->assertSet('termine', false)
+            ->assertDontSee('Quiz terminé');
+
+        for ($i = 2; $i < $total; $i++) {
             $quiz->call('passer');
         }
 
         $quiz->assertSet('termine', true)
             ->assertSee('Quiz terminé')
-            ->assertSee("1 bonne réponse sur {$total}");
+            ->assertSee("1 bonne réponse sur {$total}")
+            ->assertSee('La correction')
+            ->assertSee($premiere->explication)
+            ->assertSee($deuxieme->explication)
+            ->assertSee('À revoir')
+            ->assertSee('Passée');
+    }
+
+    public function test_la_fin_du_chrono_garde_la_reponse_en_cours(): void
+    {
+        $epreuve = Epreuve::where('code', 'co')->first();
+        $quiz = Livewire::test('pages::quiz', ['epreuve' => $epreuve]);
+        $question = $epreuve->questions()->find($quiz->get('ids')[0]);
+
+        $quiz->call('choisir', $question->bonne_reponse)
+            ->call('terminer')
+            ->assertSet('termine', true)
+            ->assertSet('reponses', [0 => $question->bonne_reponse])
+            ->assertSee('1 bonne réponse sur')
+            ->assertSee('Le temps est écoulé avant la fin.')
+            ->assertSee('Pas répondu');
     }
 
     public function test_les_proprietes_du_quiz_sont_verrouillees(): void
