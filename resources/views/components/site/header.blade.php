@@ -1,3 +1,5 @@
+@props(['collant' => false])
+
 @php
     $liens = [
         '#epreuves' => 'Épreuves',
@@ -8,7 +10,9 @@
     ];
 @endphp
 
-<header x-data="{ ouvert: false }" @keydown.escape.window="ouvert = false" class="relative z-30">
+<header x-data="{ ouvert: false, defile: false }" @keydown.escape.window="ouvert = false"
+    @if ($collant) x-init="defile = scrollY > 8" @scroll.window.passive="defile = scrollY > 8" :class="defile && 'bg-white/85 shadow-[0_1px_0_var(--color-ligne),0_12px_32px_rgba(11,46,28,0.06)] backdrop-blur-md'" @endif
+    @class(['z-30', 'sticky top-0 transition-[background-color,box-shadow] duration-300' => $collant, 'relative' => ! $collant])>
     <div class="mx-auto flex h-16 max-w-[1200px] items-center justify-between pr-2 pl-5 md:h-20 md:px-10 xl:px-0">
         <a href="{{ route('accueil') }}" wire:navigate aria-label="Edumica, accueil" class="flex items-center gap-2.5 text-foret md:gap-3">
             <x-logo class="size-[30px] md:size-9" />
@@ -17,13 +21,16 @@
 
         <nav aria-label="Navigation principale" class="hidden gap-2 text-base font-semibold lg:flex">
             @foreach ($liens as $ancre => $libelle)
-                <a href="{{ $ancre }}" class="px-3.5 py-3 text-foret">{{ $libelle }}</a>
+                <a href="{{ $ancre }}" class="group relative px-3.5 py-3 text-foret">
+                    {{ $libelle }}
+                    <span aria-hidden="true" class="absolute inset-x-3.5 bottom-2 h-0.5 origin-left scale-x-0 rounded-full bg-vert transition-transform duration-300 ease-ressort group-hover:scale-x-100"></span>
+                </a>
             @endforeach
         </nav>
 
         <div class="flex items-center md:gap-2">
             <a href="#" class="px-2.5 py-3 text-[15px] font-semibold text-foret md:px-4 md:text-base">Connexion</a>
-            <a href="{{ route('quiz', 'comprehension-orale') }}" wire:navigate class="hidden rounded-[14px] bg-vert px-[22px] py-3.5 text-base font-bold text-white hover:bg-foret md:inline-flex">Essai gratuit</a>
+            <a href="{{ route('quiz', 'comprehension-orale') }}" wire:navigate class="hidden rounded-[14px] bg-vert px-[22px] py-3.5 text-base font-bold text-white transition hover:-translate-y-0.5 hover:bg-foret hover:shadow-[0_10px_24px_rgba(14,122,69,0.25)] md:inline-flex">Essai gratuit</a>
             <button type="button" @click="ouvert = !ouvert" :aria-expanded="ouvert" aria-controls="menu-mobile" class="flex size-12 items-center justify-center lg:hidden">
                 <span class="sr-only" x-text="ouvert ? 'Fermer le menu' : 'Ouvrir le menu'">Ouvrir le menu</span>
                 <x-icone nom="menu" class="size-6" x-show="!ouvert" />

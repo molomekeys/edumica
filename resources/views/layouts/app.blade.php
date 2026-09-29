@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#D3F4DF">
+    <script>document.documentElement.classList.add('js')</script>
 
     <title>{{ isset($title) ? $title.' · Edumica' : 'Edumica · Préparation au TCF Canada et TCF Tout public' }}</title>
     <meta name="description" content="Quiz gratuits et tests blancs chronométrés pour le TCF Canada et le TCF Tout public, avec un niveau estimé CECRL et NCLC.">

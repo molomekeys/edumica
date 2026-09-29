@@ -1,4 +1,28 @@
 document.addEventListener('alpine:init', () => {
+    /**
+     * Fait apparaître l'élément quand il entre dans l'écran (voir .est-visible dans app.css).
+     * Le décalage se règle avec la variable CSS --delai.
+     */
+    window.Alpine.directive('apparition', (el, _, { cleanup }) => {
+        if (!('IntersectionObserver' in window)) {
+            el.classList.add('est-visible');
+            return;
+        }
+
+        const observateur = new IntersectionObserver(
+            (entrees) => {
+                if (entrees.some((entree) => entree.isIntersecting)) {
+                    el.classList.add('est-visible');
+                    observateur.disconnect();
+                }
+            },
+            { rootMargin: '0px 0px -8% 0px' },
+        );
+
+        observateur.observe(el);
+        cleanup(() => observateur.disconnect());
+    });
+
     const format = (secondes) => {
         const s = Math.max(0, Math.round(secondes));
         return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
