@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Epreuve;
-use App\Support\Nclc;
+use App\Support\Faq;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -13,21 +13,9 @@ new class extends Component
         return Epreuve::orderBy('ordre')->get();
     }
 
-    /** @return list<array{0: string, 1: string}> */
-    public function faq(): array
-    {
-        return [
-            ['Est-ce un test officiel ?', "Non. Seul le TCF passé dans un centre agréé donne un résultat officiel. Edumica sert à t'entraîner."],
-            ['Mon niveau estimé est-il fiable ?', "C'est une estimation d'entraînement, calculée sur des épreuves au format de l'examen. Elle te donne une tendance solide pour savoir où tu en es, pas un résultat officiel."],
-            ['Quelle différence entre TCF Canada et TCF Tout public ?', "Le TCF Canada est exigé par IRCC pour l'immigration au Canada, ses résultats se lisent en NCLC. Le TCF Tout public sert pour les études, le travail ou un projet personnel, et donne un niveau CECRL."],
-            ["Combien de temps dure l'accès à un test blanc ?", '[DURÉE D\'ACCÈS À UN TEST BLANC]'],
-            ['Faut-il créer un compte ?', '[RÉPONSE : QUIZ SANS COMPTE ? COMPTE POUR LES TESTS BLANCS ?]'],
-        ];
-    }
-
     public function render()
     {
-        return $this->view(['faq' => $this->faq(), 'bareme' => Nclc::BAREME, 'cible' => Nclc::CIBLE_PAR_DEFAUT]);
+        return $this->view(['faq' => Faq::accueil()]);
     }
 };
 ?>
@@ -50,7 +38,7 @@ new class extends Component
                     <p class="max-w-[540px] text-[17px] leading-normal text-mousse-fonce md:text-xl md:leading-[1.55]">Quiz gratuits pour t'entraîner, tests blancs chronométrés pour un niveau estimé CECRL et NCLC.</p>
                     <div class="flex flex-col gap-2.5 md:flex-row md:items-center md:gap-3">
                         <a href="{{ route('quiz', 'comprehension-orale') }}" wire:navigate class="flex h-14 items-center justify-center rounded-2xl bg-foret px-[30px] text-[17px] font-bold text-white hover:bg-vert hover:text-white md:h-[58px] md:text-lg">Faire un quiz gratuit</a>
-                        <a href="#epreuves" class="flex h-[52px] items-center justify-center gap-2 rounded-2xl border-[1.5px] border-foret px-[26px] text-base font-bold text-foret hover:bg-foret/5 md:h-[58px] md:gap-2.5 md:text-lg">
+                        <a href="{{ route('epreuves') }}" wire:navigate class="flex h-[52px] items-center justify-center gap-2 rounded-2xl border-[1.5px] border-foret px-[26px] text-base font-bold text-foret hover:bg-foret/5 md:h-[58px] md:gap-2.5 md:text-lg">
                             <x-icone nom="boussole" class="size-[18px] md:size-5" />Explorer les épreuves
                         </a>
                     </div>
@@ -93,7 +81,7 @@ new class extends Component
                     <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">Choisis une épreuve</h2>
                     <p class="hidden text-lg text-mousse md:block">Des quiz gratuits au format de l'examen, corrigés tout de suite.</p>
                 </div>
-                <a href="{{ route('quiz', 'comprehension-orale') }}" wire:navigate class="hidden shrink-0 border-b-2 border-foret py-3 text-base font-bold text-foret md:block">Explorer tous les quiz</a>
+                <a href="{{ route('epreuves') }}" wire:navigate class="hidden shrink-0 border-b-2 border-foret py-3 text-base font-bold text-foret md:block">Tout savoir sur les épreuves</a>
             </div>
 
             <div class="grid gap-2.5 md:gap-4 lg:grid-cols-2">
@@ -120,6 +108,7 @@ new class extends Component
             <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px]">Quel score vises-tu ?</h2>
             <p class="text-base leading-normal text-mousse">Choisis ton NCLC cible pour voir le score minimum à obtenir au TCF Canada.</p>
             <livewire:nclc-cible />
+            <a href="{{ route('scores') }}" wire:navigate class="flex h-[52px] items-center justify-center rounded-2xl border-[1.5px] border-foret text-base font-bold text-foret">Voir le barème complet</a>
         </section>
 
         {{-- Comment ça marche --}}
@@ -155,7 +144,7 @@ new class extends Component
                 <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">Ton bilan après un test blanc</h2>
                 <p class="hidden text-lg leading-relaxed text-mousse md:block">Ton niveau par épreuve, en CECRL et en NCLC, et l'épreuve à travailler en priorité.</p>
                 <div class="hidden gap-3 md:flex">
-                    <a href="#tarifs" class="flex h-[54px] items-center rounded-[14px] bg-foret px-[26px] text-base font-bold text-white hover:bg-vert hover:text-white">Passer un test blanc</a>
+                    <a href="{{ route('tests-blancs') }}" wire:navigate class="flex h-[54px] items-center rounded-[14px] bg-foret px-[26px] text-base font-bold text-white hover:bg-vert hover:text-white">Passer un test blanc</a>
                     <a href="{{ route('bilan') }}" wire:navigate class="flex h-[54px] items-center px-2 text-base font-bold text-foret underline decoration-2 underline-offset-4">Voir un exemple</a>
                 </div>
             </div>
@@ -194,29 +183,9 @@ new class extends Component
             <div class="flex flex-col gap-[18px] lg:w-[420px] lg:shrink-0">
                 <h2 class="font-titre text-[44px] leading-[1.05] tracking-[-1.5px]">Quel score pour quel NCLC&nbsp;?</h2>
                 <p class="text-[17px] leading-relaxed text-mousse">Correspondance entre les résultats du TCF Canada et les niveaux NCLC utilisés par IRCC. Vérifie le niveau exigé par ton programme.</p>
+                <a href="{{ route('scores') }}" wire:navigate class="self-start py-2 text-base font-bold text-foret underline decoration-2 underline-offset-4">Comprendre le barème</a>
             </div>
-            <div class="w-full flex-1 overflow-hidden rounded-3xl border-[1.5px] border-ligne">
-                <table class="w-full border-collapse text-left text-base">
-                    <thead>
-                        <tr class="bg-brume">
-                            <th scope="col" class="px-5 py-4 font-bold">NCLC</th>
-                            @foreach (['co', 'ce', 'eo', 'ee'] as $code)
-                                <th scope="col" class="px-5 py-4 font-bold">{{ \App\Support\Nclc::EPREUVES[$code][1] }}</th>
-                            @endforeach
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($bareme as $niveau => $plages)
-                            <tr @class(['border-t-[1.5px] border-ligne', 'bg-peche-clair font-bold' => (string) $niveau === $cible])>
-                                <th scope="row" @class(['px-5 py-3.5', 'font-extrabold' => (string) $niveau === $cible, 'font-bold' => (string) $niveau !== $cible])>{{ $niveau }}</th>
-                                @foreach (['co', 'ce', 'eo', 'ee'] as $code)
-                                    <td class="px-5 py-3.5">{{ \App\Support\Nclc::plage($plages[$code]) }}</td>
-                                @endforeach
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+            <x-bareme :mobile="false" class="w-full flex-1" />
         </section>
 
         {{-- Avis --}}
@@ -246,69 +215,22 @@ new class extends Component
             <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-center md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">
                 <span class="md:hidden">Tarifs</span><span class="hidden md:inline">Deux façons de te préparer</span>
             </h2>
-            <div class="grid gap-3.5 md:grid-cols-2 md:gap-6 xl:px-[100px]">
-                <div class="flex flex-col gap-3 rounded-[20px] border-[1.5px] border-ligne p-5 md:gap-[18px] md:rounded-[28px] md:p-10">
-                    <div class="flex items-baseline justify-between md:flex-col md:gap-[18px]">
-                        <div class="text-[17px] font-bold md:text-lg">Quiz</div>
-                        <div class="font-titre text-[26px] md:text-[52px] md:leading-none md:tracking-[-1.5px]">Gratuit</div>
-                    </div>
-                    <p class="text-[15px] leading-normal text-mousse md:hidden">Les 4 épreuves · correction immédiate · sans carte bancaire</p>
-                    <ul class="hidden flex-col gap-2.5 text-base text-mousse md:flex">
-                        @foreach (['Quiz sur les 4 épreuves', 'Correction immédiate', 'Sans carte bancaire'] as $avantage)
-                            <li class="flex items-center gap-2.5"><x-icone nom="coche" :epaisseur="2.4" class="size-[18px] text-vert" />{{ $avantage }}</li>
-                        @endforeach
-                    </ul>
-                    <a href="{{ route('quiz', 'comprehension-orale') }}" wire:navigate class="flex h-[52px] items-center justify-center rounded-[14px] bg-brume text-base font-bold text-foret hover:bg-menthe hover:text-foret md:mt-2 md:h-[54px]">Commencer gratuitement</a>
-                </div>
-
-                <div class="flex flex-col gap-3 rounded-[20px] bg-vert p-5 text-white md:gap-[18px] md:rounded-[28px] md:p-10">
-                    <div class="flex items-baseline justify-between md:flex-col md:gap-[18px]">
-                        <div class="flex w-full items-center justify-between">
-                            <div class="text-[17px] font-bold md:text-lg">Test blanc complet</div>
-                            <div class="hidden rounded-full bg-peche px-3 py-1.5 text-[13px] font-bold text-foret md:block">Conditions réelles</div>
-                        </div>
-                        <div class="shrink-0 font-titre text-[26px] md:text-[52px] md:leading-none md:tracking-[-1.5px]">[PRIX]</div>
-                    </div>
-                    <p class="text-[15px] leading-normal text-vert-pale md:hidden">4 épreuves chronométrées · niveau CECRL et NCLC · bilan détaillé</p>
-                    <ul class="hidden flex-col gap-2.5 text-base text-vert-pale md:flex">
-                        @foreach (['Les 4 épreuves, chronométrées', 'Niveau estimé CECRL et NCLC', 'Bilan détaillé et quiz conseillés'] as $avantage)
-                            <li class="flex items-center gap-2.5"><x-icone nom="coche" :epaisseur="2.4" class="size-[18px] text-peche" />{{ $avantage }}</li>
-                        @endforeach
-                    </ul>
-                    {{-- TODO : brancher le paiement du test blanc --}}
-                    <a href="#" class="flex h-[52px] items-center justify-center rounded-[14px] bg-peche text-base font-bold text-foret hover:bg-white hover:text-foret md:mt-2 md:h-[54px]">Passer un test blanc</a>
-                </div>
-            </div>
+            <x-site.tarifs class="xl:px-[100px]" />
+            <a href="{{ route('tarifs') }}" wire:navigate class="self-center py-2 text-base font-bold text-foret underline decoration-2 underline-offset-4">Comparer les offres en détail</a>
         </section>
 
         {{-- Questions fréquentes --}}
-        <section id="faq" class="mx-auto flex max-w-[1200px] scroll-mt-4 flex-col gap-2.5 px-5 pb-10 md:px-10 md:pb-24 lg:flex-row lg:gap-20 xl:px-0" x-data="{ ouverte: 0 }">
-            <h2 class="mb-1 font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px] lg:w-[360px] lg:shrink-0">Questions fréquentes</h2>
-            <div class="flex flex-1 flex-col gap-2.5 md:gap-3">
-                @foreach ($faq as $i => [$question, $reponse])
-                    <div class="rounded-2xl bg-brume px-4 md:rounded-[20px] md:px-7">
-                        <h3>
-                            <button type="button" @click="ouverte = ouverte === {{ $i }} ? null : {{ $i }}" :aria-expanded="ouverte === {{ $i }}" aria-controls="faq-{{ $i }}"
-                                class="flex min-h-14 w-full items-center justify-between gap-3 text-left text-base font-bold text-foret md:min-h-[68px] md:text-lg">
-                                {{ $question }}
-                                <x-icone nom="bas" class="size-5 shrink-0 transition-transform duration-200" x-bind:class="ouverte === {{ $i }} && 'rotate-180'" />
-                            </button>
-                        </h3>
-                        <div id="faq-{{ $i }}" x-show="ouverte === {{ $i }}" x-collapse @if ($i !== 0) x-cloak @endif>
-                            <p class="pb-4 text-[15px] leading-[1.55] text-mousse md:pb-6 md:text-base md:leading-relaxed">{{ $reponse }}</p>
-                        </div>
-                    </div>
-                @endforeach
+        <section id="faq" class="mx-auto flex max-w-[1200px] scroll-mt-4 flex-col gap-2.5 px-5 pb-10 md:px-10 md:pb-24 lg:flex-row lg:gap-20 xl:px-0">
+            <div class="mb-1 flex flex-col gap-4 lg:w-[360px] lg:shrink-0">
+                <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">Questions fréquentes</h2>
+                <a href="{{ route('faq') }}" wire:navigate class="hidden self-start py-2 text-base font-bold text-foret underline decoration-2 underline-offset-4 lg:block">Toutes les questions</a>
             </div>
+            <x-site.faq :questions="$faq" class="flex-1" />
+            <a href="{{ route('faq') }}" wire:navigate class="self-start py-3 text-base font-bold text-foret underline decoration-2 underline-offset-4 lg:hidden">Toutes les questions</a>
         </section>
 
         {{-- Appel final --}}
-        <section class="px-3 pb-8 md:px-10 md:pb-16">
-            <div class="mx-auto flex max-w-[1360px] flex-col gap-4 rounded-[28px] bg-peche px-5 py-7 md:flex-row md:items-center md:justify-between md:gap-10 md:rounded-[36px] md:px-14 md:py-14 xl:px-20">
-                <h2 class="font-titre text-[26px] leading-[1.1] tracking-[-0.5px] md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">Ton premier quiz prend cinq minutes.</h2>
-                <a href="{{ route('quiz', 'comprehension-orale') }}" wire:navigate class="flex h-14 shrink-0 items-center justify-center rounded-2xl bg-foret px-8 text-[17px] font-bold text-white hover:bg-vert hover:text-white md:h-[58px] md:text-lg">Faire un quiz gratuit</a>
-            </div>
-        </section>
+        <x-site.appel />
     </main>
 
     <x-site.footer />

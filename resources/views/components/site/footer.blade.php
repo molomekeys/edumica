@@ -8,23 +8,39 @@
             </div>
 
             @foreach ([
-                'Épreuves' => ['Compréhension orale', 'Compréhension écrite', 'Expression écrite', 'Expression orale'],
-                'Edumica' => ['Tests blancs', 'Tarifs', 'Questions fréquentes', 'Contact'],
-                'Informations' => ['Mentions légales', 'CGV', 'Confidentialité'],
+                'Épreuves' => [
+                    route('epreuve', 'comprehension-orale') => 'Compréhension orale',
+                    route('epreuve', 'comprehension-ecrite') => 'Compréhension écrite',
+                    route('epreuve', 'expression-ecrite') => 'Expression écrite',
+                    route('epreuve', 'expression-orale') => 'Expression orale',
+                ],
+                'Edumica' => [
+                    route('tests-blancs') => 'Tests blancs',
+                    route('scores') => 'Scores NCLC',
+                    route('tarifs') => 'Tarifs',
+                    route('faq') => 'Questions fréquentes',
+                    route('contact') => 'Contact',
+                ],
+                'Informations' => [
+                    route('mentions-legales') => 'Mentions légales',
+                    route('cgv') => 'CGV',
+                    route('confidentialite') => 'Confidentialité',
+                ],
             ] as $titre => $liens)
                 <div class="hidden flex-col gap-1 md:flex">
                     <div class="mb-1.5 font-bold text-foret">{{ $titre }}</div>
-                    @foreach ($liens as $lien)
-                        <a href="#" class="py-1.5 text-mousse">{{ $lien }}</a>
+                    @foreach ($liens as $url => $lien)
+                        <a href="{{ $url }}" wire:navigate class="py-1.5 text-mousse">{{ $lien }}</a>
                     @endforeach
                 </div>
             @endforeach
         </div>
 
         <div class="flex flex-wrap gap-x-5 font-semibold md:hidden">
-            <a href="#" class="py-3 text-foret">Contact</a>
-            <a href="#" class="py-3 text-foret">Mentions légales</a>
-            <a href="#" class="py-3 text-foret">CGV</a>
+            <a href="{{ route('contact') }}" wire:navigate class="py-3 text-foret">Contact</a>
+            <a href="{{ route('mentions-legales') }}" wire:navigate class="py-3 text-foret">Mentions légales</a>
+            <a href="{{ route('cgv') }}" wire:navigate class="py-3 text-foret">CGV</a>
+            <a href="{{ route('confidentialite') }}" wire:navigate class="py-3 text-foret">Confidentialité</a>
         </div>
 
         <p class="hidden border-t-[1.5px] border-ligne pt-6 text-sm md:block">© Edumica · Non affiliée à France Éducation international. TCF est une marque de France Éducation international. Tests d'entraînement non officiels.</p>

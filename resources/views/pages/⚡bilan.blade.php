@@ -199,7 +199,7 @@ new class extends Component
                         ? "C'est l'épreuve où ta marge est la plus faible. Quelques quiz de plus pour la consolider."
                         : "C'est l'épreuve où tu es le plus loin de ton objectif. Des quiz ciblés t'aideront à gagner des points.") }}
                 </p>
-                <a href="{{ isset($this->epreuves[$priorite['code']]) ? route('quiz', $this->epreuves[$priorite['code']]) : route('accueil').'#epreuves' }}" wire:navigate
+                <a href="{{ isset($this->epreuves[$priorite['code']]) ? route('quiz', $this->epreuves[$priorite['code']]) : route('epreuves') }}" wire:navigate
                     class="flex h-[52px] items-center justify-center rounded-2xl bg-foret text-base font-bold text-white hover:bg-vert hover:text-white">
                     Travailler l'{{ mb_strtolower($priorite['nom']) }}
                 </a>
@@ -208,7 +208,7 @@ new class extends Component
 
         <section class="flex flex-col gap-2.5 px-5 pt-5 pb-4">
             <a href="#" class="flex h-[52px] items-center justify-center rounded-2xl border-[1.5px] border-foret text-base font-bold text-foret">Revoir mes réponses</a>
-            <a href="{{ route('accueil') }}#tarifs" wire:navigate class="flex h-[52px] items-center justify-center rounded-2xl bg-brume text-base font-bold text-foret hover:bg-menthe hover:text-foret">Refaire un test blanc</a>
+            <a href="{{ route('tests-blancs') }}" wire:navigate class="flex h-[52px] items-center justify-center rounded-2xl bg-brume text-base font-bold text-foret hover:bg-menthe hover:text-foret">Refaire un test blanc</a>
         </section>
 
         <p class="mt-auto px-5 pt-3 pb-8 text-[13px] leading-normal text-mousse">Estimation d'entraînement, non officielle. Seul le TCF passé dans un centre agréé donne un résultat officiel.</p>

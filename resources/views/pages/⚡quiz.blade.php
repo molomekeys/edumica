@@ -190,7 +190,7 @@ new class extends Component
             <div class="flex size-16 items-center justify-center rounded-full bg-vert text-white"><x-icone :nom="$epreuve->icone" class="size-7" /></div>
             <h1 class="font-titre text-[22px] leading-tight tracking-[-0.5px]">Pas encore de quiz pour cette épreuve</h1>
             <p class="max-w-sm text-base leading-normal text-mousse">Les quiz d'{{ mb_strtolower($epreuve->nom) }} ne sont pas encore disponibles. Entraîne-toi sur une autre épreuve en attendant.</p>
-            <a href="{{ route('accueil') }}#epreuves" wire:navigate class="mt-2 flex h-14 items-center justify-center rounded-2xl bg-foret px-8 text-[17px] font-bold text-white hover:bg-vert hover:text-white">Choisir une autre épreuve</a>
+            <a href="{{ route('epreuves') }}" wire:navigate class="mt-2 flex h-14 items-center justify-center rounded-2xl bg-foret px-8 text-[17px] font-bold text-white hover:bg-vert hover:text-white">Choisir une autre épreuve</a>
         </main>
     @elseif ($termine)
         {{-- Résultat du quiz --}}
@@ -246,7 +246,7 @@ new class extends Component
                 <a href="{{ route('quiz', $epreuve) }}" wire:navigate class="flex h-14 items-center justify-center gap-2 rounded-2xl bg-foret text-[17px] font-bold text-white hover:bg-vert hover:text-white">
                     <x-icone nom="relancer" class="size-5" />Refaire un quiz
                 </a>
-                <a href="{{ route('accueil') }}#epreuves" wire:navigate class="flex h-[52px] items-center justify-center rounded-2xl border-[1.5px] border-foret text-base font-bold text-foret">Choisir une autre épreuve</a>
+                <a href="{{ route('epreuves') }}" wire:navigate class="flex h-[52px] items-center justify-center rounded-2xl border-[1.5px] border-foret text-base font-bold text-foret">Choisir une autre épreuve</a>
             </section>
 
             <section class="mx-2 flex flex-col gap-3 rounded-[20px] bg-peche-clair p-[18px]">

@@ -2,9 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Mail\MessageContact;
 use App\Models\Epreuve;
 use Database\Seeders\EpreuveSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
+use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -26,6 +29,83 @@ class PagesTest extends TestCase
         $this->get('/quiz/expression-orale')->assertOk()->assertSee('Pas encore de quiz');
         $this->get('/bilan')->assertOk()->assertSee('Presque NCLC 7 partout.');
         $this->get('/quiz/inconnue')->assertNotFound();
+    }
+
+    public function test_les_pages_du_site_s_affichent(): void
+    {
+        $this->get('/epreuves')->assertOk()->assertSee('du TCF, une par une')->assertSee('Expression orale');
+        $this->get('/epreuves/comprehension-orale')->assertOk()->assertSee('Une difficulté qui monte')->assertSee('Où se trouve la personne qui parle ?');
+        $this->get('/epreuves/expression-orale')->assertOk()->assertSee('Entretien dirigé')->assertSee('Découvrir les tests blancs');
+        $this->get('/epreuves/inconnue')->assertNotFound();
+        $this->get('/tests-blancs')->assertOk()->assertSee('Quiz ou test blanc');
+        $this->get('/scores-nclc')->assertOk()->assertSee('Le barème complet')->assertSee('458 – 502');
+        $this->get('/tarifs')->assertOk()->assertSee('Ce qui est inclus');
+        $this->get('/faq')->assertOk()->assertSee('Les quiz sont-ils vraiment gratuits ?');
+        $this->get('/contact')->assertOk()->assertSee('Ton message');
+        $this->get('/mentions-legales')->assertOk()->assertSee('Éditeur du site');
+        $this->get('/cgv')->assertOk()->assertSee('Droit de rétractation');
+        $this->get('/confidentialite')->assertOk()->assertSee('Tes droits');
+    }
+
+    public function test_la_navigation_mene_aux_pages(): void
+    {
+        $this->get('/')
+            ->assertSee(route('epreuves'))
+            ->assertSee(route('tests-blancs'))
+            ->assertSee(route('scores'))
+            ->assertSee(route('tarifs'))
+            ->assertSee(route('faq'))
+            ->assertSee(route('contact'))
+            ->assertSee(route('epreuve', 'expression-ecrite'))
+            ->assertSee(route('cgv'));
+    }
+
+    public function test_l_objectif_surligne_le_bareme(): void
+    {
+        Livewire::test('pages::scores')
+            ->assertSet('cible', '7')
+            ->dispatch('cible-choisie', niveau: '9')
+            ->assertSet('cible', '9')
+            ->assertSee('NCLC 9</span>, est surligné', false)
+            ->dispatch('cible-choisie', niveau: '42')
+            ->assertSet('cible', '9');
+
+        Livewire::test('nclc-cible')->call('choisir', '8')->assertDispatched('cible-choisie', niveau: '8');
+    }
+
+    public function test_le_formulaire_de_contact(): void
+    {
+        Mail::fake();
+
+        Livewire::test('pages::contact')
+            ->call('envoyer')
+            ->assertHasErrors(['nom', 'email', 'sujet', 'contenu'])
+            ->set('nom', 'Awa')
+            ->set('email', 'awa@example.com')
+            ->set('sujet', 'Question sur le TCF')
+            ->set('contenu', 'Combien de temps dure le TCF Canada ?')
+            ->call('envoyer')
+            ->assertHasNoErrors()
+            ->assertSet('envoye', true)
+            ->assertSet('contenu', '');
+
+        Mail::assertSent(MessageContact::class, fn (MessageContact $mail) => $mail->hasTo(config('mail.contact')) && $mail->hasReplyTo('awa@example.com'));
+    }
+
+    public function test_le_formulaire_de_contact_ignore_les_robots(): void
+    {
+        Mail::fake();
+
+        Livewire::test('pages::contact')
+            ->set('nom', 'Robot')
+            ->set('email', 'robot@example.com')
+            ->set('sujet', 'Autre')
+            ->set('contenu', 'Message automatique indésirable.')
+            ->set('site', 'https://spam.example')
+            ->call('envoyer')
+            ->assertSet('envoye', true);
+
+        Mail::assertNothingSent();
     }
 
     public function test_un_quiz_se_deroule_jusqu_au_resultat(): void
@@ -57,7 +137,7 @@ class PagesTest extends TestCase
 
     public function test_les_proprietes_du_quiz_sont_verrouillees(): void
     {
-        $this->expectException(\Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException::class);
+        $this->expectException(CannotUpdateLockedPropertyException::class);
 
         Livewire::test('pages::quiz', ['epreuve' => Epreuve::first()])->set('termine', true);
     }
