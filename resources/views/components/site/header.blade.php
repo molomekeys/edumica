@@ -2,12 +2,14 @@
 
 @php
     $liens = [
-        '#epreuves' => 'Épreuves',
-        '#tests-blancs' => 'Tests blancs',
-        '#scores' => 'Scores NCLC',
-        '#tarifs' => 'Tarifs',
-        '#faq' => 'FAQ',
+        'epreuves' => 'Épreuves',
+        'tests-blancs' => 'Tests blancs',
+        'scores' => 'Scores NCLC',
+        'tarifs' => 'Tarifs',
+        'faq' => 'FAQ',
     ];
+
+    $actif = fn (string $route) => request()->routeIs($route) || ($route === 'epreuves' && request()->routeIs('epreuve'));
 @endphp
 
 <header x-data="{ ouvert: false, defile: false }" @keydown.escape.window="ouvert = false"
@@ -20,10 +22,11 @@
         </a>
 
         <nav aria-label="Navigation principale" class="hidden gap-2 text-base font-semibold lg:flex">
-            @foreach ($liens as $ancre => $libelle)
-                <a href="{{ $ancre }}" class="group relative px-3.5 py-3 text-foret">
+            @foreach ($liens as $route => $libelle)
+                <a href="{{ route($route) }}" wire:navigate @if ($actif($route)) aria-current="page" @endif
+                    @class(['group relative px-3.5 py-3', 'text-foret' => ! $actif($route), 'text-vert' => $actif($route)])>
                     {{ $libelle }}
-                    <span aria-hidden="true" class="absolute inset-x-3.5 bottom-2 h-0.5 origin-left scale-x-0 rounded-full bg-vert transition-transform duration-300 ease-ressort group-hover:scale-x-100"></span>
+                    <span aria-hidden="true" @class(['absolute inset-x-3.5 bottom-2 h-0.5 origin-left rounded-full bg-vert transition-transform duration-300 ease-ressort', 'scale-x-0 group-hover:scale-x-100' => ! $actif($route)])></span>
                 </a>
             @endforeach
         </nav>
@@ -48,8 +51,9 @@
 
     <nav id="menu-mobile" x-show="ouvert" x-cloak x-transition.opacity.duration.150ms @click.outside="ouvert = false"
         aria-label="Menu" class="absolute inset-x-3 top-full rounded-3xl border-[1.5px] border-ligne bg-white p-3 shadow-[0_16px_40px_rgba(11,46,28,0.12)] lg:hidden">
-        @foreach ($liens as $ancre => $libelle)
-            <a href="{{ $ancre === '#scores' ? '#scores-cible' : $ancre }}" @click="ouvert = false" class="flex min-h-12 items-center justify-between rounded-2xl px-4 text-[17px] font-semibold text-foret hover:bg-brume">
+        @foreach ($liens as $route => $libelle)
+            <a href="{{ route($route) }}" wire:navigate @click="ouvert = false" @if ($actif($route)) aria-current="page" @endif
+                @class(['flex min-h-12 items-center justify-between rounded-2xl px-4 text-[17px] font-semibold text-foret hover:bg-brume', 'bg-brume' => $actif($route)])>
                 {{ $libelle }}
                 <x-icone nom="droite" class="size-5" />
             </a>

@@ -12,6 +12,7 @@ new class extends Component
     {
         if (Nclc::existe($niveau)) {
             $this->cible = $niveau;
+            $this->dispatch('cible-choisie', niveau: $niveau);
         }
     }
 
