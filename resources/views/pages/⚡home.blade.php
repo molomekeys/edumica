@@ -13,22 +13,14 @@ new class extends Component
         return Epreuve::orderBy('ordre')->get();
     }
 
-    /** @return list<string> */
-    public function bandeau(): array
-    {
-        return [...$this->epreuves->pluck('nom'), 'Niveau CECRL', 'Niveau NCLC', 'Correction immédiate', 'Tests blancs chronométrés'];
-    }
-
     public function render()
     {
-        return $this->view(['faq' => Faq::accueil(), 'bandeau' => $this->bandeau()]);
+        return $this->view(['faq' => Faq::accueil()]);
     }
 };
 ?>
 
 <div x-data class="flex min-h-dvh flex-col">
-    <div aria-hidden="true" class="progression-lecture fixed inset-x-0 top-0 z-40 h-1 bg-vert"></div>
-
     <x-site.header collant />
 
     <main class="flex-1">
@@ -91,24 +83,8 @@ new class extends Component
             </div>
         </section>
 
-        {{-- Bandeau défilant --}}
-        <div class="fondu-bords overflow-hidden py-5 md:py-8">
-            <div class="flex w-max animate-defile hover:[animation-play-state:paused]">
-                @foreach ([false, true] as $copie)
-                    <ul class="flex shrink-0 items-center" @if ($copie) aria-hidden="true" @endif>
-                        @foreach ($bandeau as $element)
-                            <li class="flex items-center gap-6 pr-6 font-titre text-base whitespace-nowrap text-foret/80 md:gap-10 md:pr-10 md:text-2xl">
-                                {{ $element }}
-                                <x-logo class="size-4 md:size-6" />
-                            </li>
-                        @endforeach
-                    </ul>
-                @endforeach
-            </div>
-        </div>
-
         {{-- Points forts --}}
-        <section class="mx-auto hidden max-w-[1200px] px-10 md:block xl:px-0">
+        <section class="mx-auto hidden max-w-[1200px] px-10 pt-10 md:block xl:px-0">
             <div class="grid grid-cols-2 gap-4 xl:grid-cols-4">
                 @foreach ([
                     ['chrono', "Au format de l'examen", 'Les 4 épreuves, avec leurs durées'],
@@ -116,7 +92,7 @@ new class extends Component
                     ['jauge', 'Niveau CECRL et NCLC', 'Estimé après chaque test blanc'],
                     ['telephone', 'Mobile et ordinateur', "Entraîne-toi où que tu sois"],
                 ] as $i => [$icone, $titre, $texte])
-                    <div x-apparition style="--delai: {{ $i * 90 }}ms" class="group flex items-center gap-3.5 rounded-[20px] border-[1.5px] border-ligne p-5 transition duration-300 hover:-translate-y-1 hover:border-vert/40 hover:shadow-[0_16px_40px_rgba(11,46,28,0.08)]">
+                    <div class="group flex items-center gap-3.5 rounded-[20px] border-[1.5px] border-ligne p-5 transition duration-300 hover:-translate-y-1 hover:border-vert/40 hover:shadow-[0_16px_40px_rgba(11,46,28,0.08)]">
                         <div class="flex size-12 shrink-0 items-center justify-center rounded-[14px] bg-brume text-vert transition duration-300 ease-ressort group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-menthe"><x-icone :nom="$icone" class="size-6" /></div>
                         <div class="flex flex-col gap-0.5">
                             <div class="text-base font-bold">{{ $titre }}</div>
@@ -129,7 +105,7 @@ new class extends Component
 
         {{-- Épreuves --}}
         <section id="epreuves" class="mx-auto flex max-w-[1200px] scroll-mt-20 flex-col gap-4 px-5 py-10 md:scroll-mt-24 md:gap-9 md:px-10 md:py-24 xl:px-0">
-            <div x-apparition class="flex items-end justify-between gap-6">
+            <div class="flex items-end justify-between gap-6">
                 <div class="flex flex-col gap-2.5">
                     <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">Choisis une épreuve</h2>
                     <p class="hidden text-lg text-mousse md:block">Des quiz gratuits au format de l'examen, corrigés et expliqués.</p>
@@ -143,7 +119,7 @@ new class extends Component
 
             <div class="grid gap-2.5 md:gap-4 lg:grid-cols-2">
                 @foreach ($this->epreuves as $epreuve)
-                    <a href="{{ route('quiz', $epreuve) }}" wire:navigate wire:key="epreuve-{{ $epreuve->id }}" x-apparition style="--delai: {{ $loop->index * 90 }}ms"
+                    <a href="{{ route('quiz', $epreuve) }}" wire:navigate wire:key="epreuve-{{ $epreuve->id }}"
                         class="group flex min-h-[76px] items-center gap-3.5 rounded-[18px] bg-brume py-3 pr-4 pl-3 text-foret transition duration-300 ease-ressort hover:-translate-y-1 hover:bg-menthe hover:text-foret hover:shadow-[0_18px_40px_rgba(11,46,28,0.08)] md:min-h-[120px] md:gap-5 md:rounded-[22px] md:py-6 md:pr-7 md:pl-6">
                         <div class="relative flex size-12 shrink-0 items-center justify-center rounded-full bg-vert text-white transition duration-500 ease-ressort group-hover:scale-110 group-hover:-rotate-12 md:size-16">
                             <span aria-hidden="true" class="absolute inset-0 rounded-full bg-vert opacity-0 transition duration-500 group-hover:scale-125 group-hover:opacity-20"></span>
@@ -162,7 +138,7 @@ new class extends Component
         </section>
 
         {{-- Score visé (téléphone) --}}
-        <section id="scores-cible" x-apparition class="flex scroll-mt-20 flex-col gap-3.5 px-5 pb-10 md:hidden">
+        <section id="scores-cible" class="flex scroll-mt-20 flex-col gap-3.5 px-5 pb-10 md:hidden">
             <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px]">Quel score vises-tu ?</h2>
             <p class="text-base leading-normal text-mousse">Choisis ton NCLC cible pour voir le score minimum à obtenir au TCF Canada.</p>
             <livewire:nclc-cible />
@@ -171,9 +147,9 @@ new class extends Component
 
         {{-- Comment ça marche --}}
         <section class="relative isolate overflow-hidden bg-brume">
-            <x-arcs class="-top-[180px] -right-[180px] hidden size-[480px] animate-tourne md:block" />
+            <x-arcs class="-top-[180px] -right-[180px] hidden size-[480px] md:block" />
             <div class="mx-auto flex max-w-[1200px] flex-col gap-[18px] px-5 pt-8 pb-10 md:gap-10 md:px-10 md:py-24 xl:px-0">
-                <h2 x-apparition class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-center md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">Comment ça marche</h2>
+                <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-center md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">Comment ça marche</h2>
                 <ol class="relative flex flex-col gap-[18px] md:grid md:grid-cols-3 md:gap-5">
                     {{-- Fil qui relie les étapes (téléphone) --}}
                     <span aria-hidden="true" class="absolute top-9 bottom-9 left-[17px] w-0.5 rounded-full bg-vert/20 md:hidden"></span>
@@ -182,7 +158,7 @@ new class extends Component
                         ['Passer un test blanc', "Les 4 épreuves avec le chrono de l'examen.", "Les 4 épreuves dans l'ordre et avec le chrono de l'examen, pour te mettre en conditions réelles."],
                         ['Cibler ce qui manque', 'Ton bilan te dit combien de points il te manque, épreuve par épreuve.', 'Ton bilan donne ton niveau par épreuve et te propose les quiz à refaire en priorité.'],
                     ] as $i => [$titre, $court, $long])
-                        <li x-apparition style="--delai: {{ $i * 140 }}ms" class="group relative flex gap-3.5 md:flex-col md:rounded-3xl md:bg-white md:p-8 md:transition md:duration-300 md:hover:-translate-y-1.5 md:hover:shadow-[0_20px_44px_rgba(11,46,28,0.08)]">
+                        <li class="group relative flex gap-3.5 md:flex-col md:rounded-3xl md:bg-white md:p-8 md:transition md:duration-300 md:hover:-translate-y-1.5 md:hover:shadow-[0_20px_44px_rgba(11,46,28,0.08)]">
                             <div @class([
                                 'relative flex size-9 shrink-0 items-center justify-center rounded-full font-extrabold ring-4 ring-brume transition-transform duration-500 ease-ressort group-hover:scale-110 md:size-12 md:font-titre md:text-xl md:ring-0',
                                 'bg-vert text-white' => $i < 2,
@@ -204,7 +180,7 @@ new class extends Component
 
         {{-- Bilan --}}
         <section id="tests-blancs" class="mx-auto flex max-w-[1200px] scroll-mt-20 flex-col gap-4 px-5 py-10 md:scroll-mt-24 md:px-10 md:py-24 lg:flex-row lg:items-center lg:gap-20 xl:px-0">
-            <div x-apparition class="flex flex-col gap-5 lg:w-[440px] lg:shrink-0">
+            <div class="flex flex-col gap-5 lg:w-[440px] lg:shrink-0">
                 <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">Ton bilan après un test blanc</h2>
                 <p class="hidden text-lg leading-relaxed text-mousse md:block">Ton niveau par épreuve, en CECRL et en NCLC, et l'épreuve à travailler en priorité.</p>
                 <div class="hidden gap-3 md:flex">
@@ -213,7 +189,7 @@ new class extends Component
                 </div>
             </div>
 
-            <a href="{{ route('bilan') }}" wire:navigate x-apparition style="--delai: 120ms" class="group flex flex-1 flex-col gap-3.5 rounded-[20px] border-[1.5px] border-ligne p-5 text-foret transition duration-300 hover:-translate-y-1 hover:border-vert hover:text-foret hover:shadow-[0_24px_60px_rgba(11,46,28,0.08)] md:gap-[18px] md:rounded-[28px] md:p-9">
+            <a href="{{ route('bilan') }}" wire:navigate class="group flex flex-1 flex-col gap-3.5 rounded-[20px] border-[1.5px] border-ligne p-5 text-foret transition duration-300 hover:-translate-y-1 hover:border-vert hover:text-foret hover:shadow-[0_24px_60px_rgba(11,46,28,0.08)] md:gap-[18px] md:rounded-[28px] md:p-9">
                 <div class="flex items-baseline justify-between">
                     <div class="flex items-baseline gap-2.5 md:gap-3">
                         <div class="font-titre text-4xl leading-none md:text-[44px]">B2</div>
@@ -233,7 +209,7 @@ new class extends Component
                             <span class="font-bold md:hidden">{{ $niveau }}{{ $aTravailler ? ' · à travailler' : '' }}</span>
                         </div>
                         <div class="h-3 flex-1 rounded-md bg-brume md:h-6 md:rounded-lg">
-                            <div @class(['barre h-full rounded-md md:rounded-lg', 'bg-peche' => $aTravailler, 'bg-vert' => ! $aTravailler]) style="width: {{ $pourcentage }}%; --delai-barre: {{ $i * 150 }}ms"></div>
+                            <div @class(['h-full rounded-md md:rounded-lg', 'bg-peche' => $aTravailler, 'bg-vert' => ! $aTravailler]) style="width: {{ $pourcentage }}%"></div>
                         </div>
                         <div class="hidden w-9 text-right font-bold md:block">{{ $niveau }}</div>
                     </div>
@@ -244,12 +220,12 @@ new class extends Component
 
         {{-- Barème NCLC (ordinateur) --}}
         <section id="scores" class="mx-auto hidden max-w-[1200px] scroll-mt-24 items-start gap-16 px-10 pb-24 md:flex md:flex-col lg:flex-row xl:px-0">
-            <div x-apparition class="flex flex-col gap-[18px] lg:sticky lg:top-28 lg:w-[420px] lg:shrink-0">
+            <div class="flex flex-col gap-[18px] lg:sticky lg:top-28 lg:w-[420px] lg:shrink-0">
                 <h2 class="font-titre text-[44px] leading-[1.05] tracking-[-1.5px]">Quel score pour quel NCLC&nbsp;?</h2>
                 <p class="text-[17px] leading-relaxed text-mousse">Correspondance entre les résultats du TCF Canada et les niveaux NCLC utilisés par IRCC. Vérifie le niveau exigé par ton programme.</p>
                 <a href="{{ route('scores') }}" wire:navigate class="self-start py-2 text-base font-bold text-foret underline decoration-2 underline-offset-4">Comprendre le barème</a>
             </div>
-            <div x-apparition style="--delai: 120ms" class="w-full flex-1">
+            <div class="w-full flex-1">
                 <x-bareme :mobile="false" />
             </div>
         </section>
@@ -258,13 +234,13 @@ new class extends Component
         <section class="bg-brume">
             <div class="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 py-8 md:grid md:grid-cols-3 md:gap-5 md:px-10 md:py-20 xl:px-0">
                 @foreach ([1, 2] as $n)
-                    <figure x-apparition style="--delai: {{ ($n - 1) * 120 }}ms" @class(['relative flex-col gap-2.5 overflow-hidden rounded-[20px] bg-white p-5 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_44px_rgba(11,46,28,0.08)] md:gap-3.5 md:rounded-3xl md:p-8', 'flex' => $n === 1, 'hidden md:flex' => $n === 2])>
+                    <figure @class(['relative flex-col gap-2.5 overflow-hidden rounded-[20px] bg-white p-5 transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_44px_rgba(11,46,28,0.08)] md:gap-3.5 md:rounded-3xl md:p-8', 'flex' => $n === 1, 'hidden md:flex' => $n === 2])>
                         <span aria-hidden="true" class="pointer-events-none absolute top-1 right-5 font-titre text-[96px] leading-none text-menthe">“</span>
                         <blockquote class="relative text-[17px] leading-normal font-medium md:text-[19px]">« [TÉMOIGNAGE D'UN CANDIDAT] »</blockquote>
                         <figcaption class="relative text-sm text-mousse md:mt-auto md:text-[15px]">[PRÉNOM] · [NIVEAU OBTENU]</figcaption>
                     </figure>
                 @endforeach
-                <div x-apparition style="--delai: 240ms" class="grid grid-cols-2 gap-3 md:flex md:flex-col md:gap-5">
+                <div class="grid grid-cols-2 gap-3 md:flex md:flex-col md:gap-5">
                     <div class="flex flex-col justify-center gap-1 rounded-2xl bg-white p-3.5 text-center md:flex-1 md:rounded-3xl md:px-7 md:py-6 md:text-left">
                         <div class="font-titre text-lg md:text-3xl">[NOMBRE]</div>
                         <div class="text-[13px] text-mousse md:text-[15px]">quiz corrigés</div>
@@ -279,16 +255,16 @@ new class extends Component
 
         {{-- Tarifs --}}
         <section id="tarifs" class="mx-auto flex max-w-[1200px] scroll-mt-20 flex-col gap-3.5 px-5 py-10 md:scroll-mt-24 md:gap-9 md:px-10 md:py-24 xl:px-0">
-            <h2 x-apparition class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-center md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">
+            <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-center md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">
                 <span class="md:hidden">Tarifs</span><span class="hidden md:inline">Deux façons de te préparer</span>
             </h2>
-            <x-site.tarifs anime class="xl:px-[100px]" />
+            <x-site.tarifs class="xl:px-[100px]" />
             <a href="{{ route('tarifs') }}" wire:navigate class="self-center py-2 text-base font-bold text-foret underline decoration-2 underline-offset-4">Comparer les offres en détail</a>
         </section>
 
         {{-- Questions fréquentes --}}
         <section id="faq" class="mx-auto flex max-w-[1200px] scroll-mt-20 flex-col gap-2.5 px-5 pb-10 md:scroll-mt-24 md:px-10 md:pb-24 lg:flex-row lg:gap-20 xl:px-0">
-            <div x-apparition class="mb-1 flex flex-col gap-4 lg:w-[360px] lg:shrink-0">
+            <div class="mb-1 flex flex-col gap-4 lg:w-[360px] lg:shrink-0">
                 <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">Questions fréquentes</h2>
                 <a href="{{ route('faq') }}" wire:navigate class="hidden self-start py-2 text-base font-bold text-foret underline decoration-2 underline-offset-4 lg:block">Toutes les questions</a>
             </div>
@@ -297,7 +273,7 @@ new class extends Component
         </section>
 
         {{-- Appel final --}}
-        <x-site.appel anime />
+        <x-site.appel arcs />
     </main>
 
     <x-site.footer />

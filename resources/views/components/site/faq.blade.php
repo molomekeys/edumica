@@ -3,7 +3,7 @@
 
 <div {{ $attributes->merge(['class' => 'flex flex-col gap-2.5 md:gap-3']) }} x-data="{ ouverte: @js($ouverte) }">
     @foreach ($questions as $i => [$question, $reponse])
-        <div x-apparition style="--delai: {{ $i * 70 }}ms" class="rounded-2xl px-4 transition-colors duration-300 md:rounded-[20px] md:px-7" :class="ouverte === {{ $i }} ? 'bg-menthe' : 'bg-brume hover:bg-menthe/60'">
+        <div class="rounded-2xl px-4 transition-colors duration-300 md:rounded-[20px] md:px-7" :class="ouverte === {{ $i }} ? 'bg-menthe' : 'bg-brume hover:bg-menthe/60'">
             <h3>
                 <button type="button" @click="ouverte = ouverte === {{ $i }} ? null : {{ $i }}" :aria-expanded="ouverte === {{ $i }}" aria-controls="{{ $prefixe }}-{{ $i }}"
                     class="flex min-h-14 w-full items-center justify-between gap-3 text-left text-base font-bold text-foret md:min-h-[68px] md:text-lg">
