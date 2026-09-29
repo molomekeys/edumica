@@ -16,6 +16,14 @@ class NclcTest extends TestCase
         $this->assertNull(Nclc::niveauPour('eo', 5));
     }
 
+    public function test_le_niveau_global_est_le_plus_faible(): void
+    {
+        $this->assertSame('6', Nclc::plusFaible(['8', '6', '10+']));
+        $this->assertSame('10+', Nclc::plusFaible(['10+']));
+        $this->assertNull(Nclc::plusFaible(['7', null]));
+        $this->assertNull(Nclc::plusFaible([]));
+    }
+
     public function test_plage(): void
     {
         $this->assertSame('6', Nclc::plage([6, 6]));

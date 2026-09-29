@@ -1,56 +1,10 @@
 @import 'tailwindcss';
+@import './theme.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
-
-/* Identité « Menthe et forêt » */
-@theme {
-    --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
-
-    --color-foret: #0B2E1C;
-    --color-vert: #0E7A45;
-    --color-menthe: #D3F4DF;
-    --color-brume: #EEF8F2;
-    --color-peche: #FFB59E;
-    --color-peche-clair: #FFEEE8;
-    --color-mousse: #43594D;
-    --color-mousse-fonce: #2F5241;
-    --color-lichen: #4B6657;
-    --color-ligne: #D6EADD;
-    --color-jauge: #17A35F;
-    --color-jauge-vide: #E1EFE6;
-    --color-vert-pale: #D6F0E2;
-
-    /* Neutres chauds des tests blancs (forêt + pêche, sans voile vert). */
-    --color-papier: #F7F4F0;
-    --color-trait: #E6E0D9;
-    --color-cendre: #6B645D;
-
-    --ease-ressort: cubic-bezier(0.2, 0.7, 0.2, 1);
-
-    --animate-flotte: flotte 6s ease-in-out infinite;
-    --animate-tourne: tourne 90s linear infinite;
-
-    @keyframes flotte {
-        50% {
-            translate: 0 -10px;
-        }
-    }
-
-    @keyframes tourne {
-        to {
-            rotate: 360deg;
-        }
-    }
-}
-
-/* Titres : Archivo Expanded 800 */
-@utility font-titre {
-    font-family: var(--font-display);
-    font-stretch: 125%;
-    font-weight: 800;
-}
+/* Les dashboards React ont leur propre feuille : dashboard.css. */
+@source not '../js';
 
 @layer base {
     html {

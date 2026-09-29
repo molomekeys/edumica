@@ -6,6 +6,8 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Connexion de démonstration : en attendant Google (Socialite), on connecte
@@ -38,12 +40,13 @@ class ConnexionController extends Controller
         return redirect()->intended($user->is_admin ? route('admin.questions') : route('espace'));
     }
 
-    public function deconnexion(Request $request): RedirectResponse
+    /** Depuis un dashboard Inertia, l'accueil (Livewire) est chargé entièrement. */
+    public function deconnexion(Request $request): Response
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('accueil');
+        return Inertia::location(route('accueil'));
     }
 }

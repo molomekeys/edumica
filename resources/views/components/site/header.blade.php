@@ -35,9 +35,9 @@
         <div class="hidden items-center gap-2 lg:flex">
             @auth
                 @if (auth()->user()->is_admin)
-                    <a href="{{ route('admin.questions') }}" wire:navigate class="px-4 py-3 text-base font-semibold text-foret">Admin</a>
+                    <a href="{{ route('admin.questions') }}" class="px-4 py-3 text-base font-semibold text-foret">Admin</a>
                 @endif
-                <a href="{{ route('espace') }}" wire:navigate class="px-4 py-3 text-base font-semibold text-foret">Mon espace</a>
+                <a href="{{ route('espace') }}" class="px-4 py-3 text-base font-semibold text-foret">Mon espace</a>
             @else
                 <a href="{{ route('connexion') }}" wire:navigate class="px-4 py-3 text-base font-semibold text-foret">Connexion</a>
             @endauth
@@ -79,9 +79,9 @@
             <div class="mt-auto flex flex-col gap-3 border-t-[1.5px] border-ligne pt-6">
                 @auth
                     @if (auth()->user()->is_admin)
-                        <a href="{{ route('admin.questions') }}" wire:navigate @click="ouvert = false" class="flex h-14 items-center justify-center rounded-2xl border-[1.5px] border-ligne text-[17px] font-semibold text-foret hover:bg-brume">Admin</a>
+                        <a href="{{ route('admin.questions') }}" @click="ouvert = false" class="flex h-14 items-center justify-center rounded-2xl border-[1.5px] border-ligne text-[17px] font-semibold text-foret hover:bg-brume">Admin</a>
                     @endif
-                    <a href="{{ route('espace') }}" wire:navigate @click="ouvert = false" class="flex h-14 items-center justify-center rounded-2xl border-[1.5px] border-ligne text-[17px] font-semibold text-foret hover:bg-brume">Mon espace</a>
+                    <a href="{{ route('espace') }}" @click="ouvert = false" class="flex h-14 items-center justify-center rounded-2xl border-[1.5px] border-ligne text-[17px] font-semibold text-foret hover:bg-brume">Mon espace</a>
                 @else
                     <a href="{{ route('connexion') }}" wire:navigate @click="ouvert = false" class="flex h-14 items-center justify-center rounded-2xl border-[1.5px] border-ligne text-[17px] font-semibold text-foret hover:bg-brume">Connexion</a>
                 @endauth

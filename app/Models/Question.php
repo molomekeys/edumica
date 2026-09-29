@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Storage;
 #[Fillable(['epreuve_id', 'categorie', 'enonce', 'support', 'audio', 'duree_audio', 'transcription', 'choix', 'bonne_reponse', 'feedback', 'explication', 'ordre'])]
 class Question extends Model
 {
+    /** Nombre de choix possibles d'une question. */
+    public const CHOIX_MIN = 2;
+
+    public const CHOIX_MAX = 6;
+
     protected function casts(): array
     {
         return [

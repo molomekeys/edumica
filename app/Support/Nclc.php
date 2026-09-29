@@ -71,6 +71,23 @@ class Nclc
         return null;
     }
 
+    /**
+     * Niveau le plus faible d'une liste (null : sous le NCLC 5). Une liste vide ne donne aucun niveau.
+     *
+     * @param  list<?string>  $niveaux
+     */
+    public static function plusFaible(array $niveaux): ?string
+    {
+        if ($niveaux === [] || in_array(null, $niveaux, true)) {
+            return null;
+        }
+
+        $rangs = array_flip(self::niveaux());
+        usort($niveaux, fn (string $a, string $b) => $rangs[$a] <=> $rangs[$b]);
+
+        return $niveaux[0];
+    }
+
     /** @param  array{0: int, 1: int}  $plage */
     public static function plage(array $plage): string
     {
