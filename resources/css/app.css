@@ -1,0 +1,49 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+/* Identité « Menthe et forêt » */
+@theme {
+    --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+
+    --color-foret: #0B2E1C;
+    --color-vert: #0E7A45;
+    --color-menthe: #D3F4DF;
+    --color-brume: #EEF8F2;
+    --color-peche: #FFB59E;
+    --color-peche-clair: #FFEEE8;
+    --color-mousse: #43594D;
+    --color-mousse-fonce: #2F5241;
+    --color-lichen: #4B6657;
+    --color-ligne: #D6EADD;
+    --color-jauge: #17A35F;
+    --color-jauge-vide: #E1EFE6;
+    --color-vert-pale: #D6F0E2;
+}
+
+/* Titres : Archivo Expanded 800 */
+@utility font-titre {
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    font-weight: 800;
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-white font-sans text-foret antialiased;
+    }
+
+    a:hover {
+        color: var(--color-vert);
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
