@@ -22,6 +22,11 @@
     --color-jauge-vide: #E1EFE6;
     --color-vert-pale: #D6F0E2;
 
+    /* Neutres chauds des tests blancs (forêt + pêche, sans voile vert). */
+    --color-papier: #F7F4F0;
+    --color-trait: #E6E0D9;
+    --color-cendre: #6B645D;
+
     --ease-ressort: cubic-bezier(0.2, 0.7, 0.2, 1);
 
     --animate-flotte: flotte 6s ease-in-out infinite;
