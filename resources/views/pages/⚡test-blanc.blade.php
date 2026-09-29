@@ -395,9 +395,18 @@ new class extends Component
             {{-- Volet des questions : tiroir sur mobile, rétractable sur grand écran --}}
             <div x-show="panneau" x-cloak x-transition.opacity @click="panneau = false" class="fixed inset-0 z-40 bg-foret/40 lg:hidden"></div>
             <aside id="panneau-questions" aria-label="Liste des questions"
-                :class="{ 'max-lg:translate-x-0!': panneau, 'lg:w-0 lg:invisible lg:border-r-0': ! volet }"
-                class="fixed inset-y-0 left-0 z-50 w-[300px] shrink-0 overflow-hidden border-r-[1.5px] border-trait bg-white transition-[translate,width,visibility] duration-300 ease-ressort max-lg:-translate-x-full lg:sticky lg:top-[68px] lg:z-0 lg:h-[calc(100dvh-68px)]">
-                <div class="flex h-full w-[300px] flex-col">
+                :class="{ 'max-lg:translate-x-0!': panneau, 'lg:w-14': ! volet }"
+                class="fixed inset-y-0 left-0 z-50 w-[300px] shrink-0 overflow-hidden border-r-[1.5px] border-trait bg-white transition-[translate,width] duration-300 ease-ressort max-lg:-translate-x-full lg:sticky lg:top-[68px] lg:z-0 lg:h-[calc(100dvh-68px)]">
+                {{-- Volet replié (grand écran) : une fine bande reste visible, la flèche le rouvre --}}
+                <div x-show="! volet" x-cloak class="absolute inset-0 hidden flex-col items-center gap-4 pt-4 lg:flex">
+                    <button type="button" @click="volet = true" aria-controls="panneau-questions" aria-label="Afficher la liste des questions"
+                        class="flex size-9 items-center justify-center rounded-lg text-cendre hover:bg-papier hover:text-foret">
+                        <x-icone nom="droite" class="size-5" />
+                    </button>
+                    <span class="text-[12px] font-bold text-cendre tabular-nums [writing-mode:vertical-rl]">{{ count($reponses) }} / {{ $total }}</span>
+                </div>
+
+                <div :class="{ 'lg:invisible lg:opacity-0': ! volet }" class="flex h-full w-[300px] flex-col transition-[opacity,visibility] duration-200">
                     <div class="flex items-center justify-between gap-2 px-4 pt-4 pb-3">
                         <div class="flex flex-col">
                             <span class="text-[15px] font-extrabold">Questions</span>
