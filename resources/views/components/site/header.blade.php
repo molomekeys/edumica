@@ -22,7 +22,14 @@
         </nav>
 
         <div class="flex items-center md:gap-2">
-            <a href="#" class="px-2.5 py-3 text-[15px] font-semibold text-foret md:px-4 md:text-base">Connexion</a>
+            @auth
+                @if (auth()->user()->is_admin)
+                    <a href="{{ route('admin.questions') }}" wire:navigate class="px-2.5 py-3 text-[15px] font-semibold text-foret md:px-4 md:text-base">Admin</a>
+                @endif
+                <a href="{{ route('espace') }}" wire:navigate class="px-2.5 py-3 text-[15px] font-semibold text-foret md:px-4 md:text-base">Mon espace</a>
+            @else
+                <a href="{{ route('connexion') }}" wire:navigate class="px-2.5 py-3 text-[15px] font-semibold text-foret md:px-4 md:text-base">Connexion</a>
+            @endauth
             <a href="{{ route('quiz', 'comprehension-orale') }}" wire:navigate class="hidden rounded-[14px] bg-vert px-[22px] py-3.5 text-base font-bold text-white hover:bg-foret md:inline-flex">Essai gratuit</a>
             <button type="button" @click="ouvert = !ouvert" :aria-expanded="ouvert" aria-controls="menu-mobile" class="flex size-12 items-center justify-center lg:hidden">
                 <span class="sr-only" x-text="ouvert ? 'Fermer le menu' : 'Ouvrir le menu'">Ouvrir le menu</span>

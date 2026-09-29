@@ -319,27 +319,7 @@ new class extends Component
             @else
                 {{-- Question --}}
                 @if ($question->transcription || $question->audio)
-                    @php($barres = [34, 18, 26, 10, 14, 14, 34, 10, 24, 10, 14, 26, 26, 14, 24, 14, 26, 10, 14, 24, 10, 26, 10, 24, 10, 18, 30, 26, 18, 14])
-                    <div class="flex flex-col gap-2.5 rounded-[20px] bg-menthe p-4"
-                        x-data="lecteur(@js(['source' => $question->audio ? Storage::url($question->audio) : null, 'transcription' => $question->transcription, 'duree' => $question->duree_audio ?? 30]))">
-                        <div class="flex items-center gap-3.5">
-                            <button type="button" @click="jouer()" :disabled="enLecture || fini" :aria-label="fini ? 'Enregistrement déjà écouté' : 'Écouter l\'enregistrement'"
-                                class="flex size-14 shrink-0 items-center justify-center rounded-full bg-foret text-white transition-opacity disabled:opacity-40" aria-label="Écouter l'enregistrement">
-                                <svg x-show="!enLecture" class="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5l12 7-12 7z"/></svg>
-                                <svg x-show="enLecture" x-cloak class="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
-                            </button>
-                            <div class="flex h-9 flex-1 items-center gap-[3px] overflow-hidden" aria-hidden="true">
-                                @foreach ($barres as $i => $hauteur)
-                                    <div class="w-1 shrink-0 rounded-sm transition-colors" style="height: {{ $hauteur }}px"
-                                        :class="progression > {{ $i / count($barres) }} ? 'bg-foret' : 'bg-foret/25'"></div>
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="flex justify-between text-[13px] text-mousse-fonce">
-                            <span class="font-bold" x-text="fini ? 'Écoute terminée' : 'Une seule écoute, comme à l\'examen'">Une seule écoute, comme à l'examen</span>
-                            <span class="tabular-nums" x-text="libelle"></span>
-                        </div>
-                    </div>
+                    <x-lecteur :question="$question" />
                 @endif
 
                 @if ($question->support)
