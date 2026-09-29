@@ -54,7 +54,7 @@ new class extends Component
                             <x-icone nom="boussole" class="size-[18px] md:size-5" />Explorer les épreuves
                         </a>
                     </div>
-                    <p class="text-center text-[13px] text-mousse-fonce md:text-left md:text-sm">Gratuit · corrigé tout de suite · sans carte<span class="hidden md:inline"> bancaire</span></p>
+                    <p class="text-center text-[13px] text-mousse-fonce md:text-left md:text-sm">Gratuit · corrigé et expliqué · sans carte<span class="hidden md:inline"> bancaire</span></p>
                 </div>
 
                 <div class="flex flex-col items-center gap-1 rounded-[20px] bg-white px-3 pt-[18px] pb-4 md:gap-2 md:rounded-[28px] md:px-6 md:pt-9 md:pb-7 lg:flex-1">
@@ -91,7 +91,7 @@ new class extends Component
             <div class="flex items-end justify-between gap-6">
                 <div class="flex flex-col gap-2.5">
                     <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">Choisis une épreuve</h2>
-                    <p class="hidden text-lg text-mousse md:block">Des quiz gratuits au format de l'examen, corrigés tout de suite.</p>
+                    <p class="hidden text-lg text-mousse md:block">Des quiz gratuits au format de l'examen, corrigés et expliqués.</p>
                 </div>
                 <a href="{{ route('quiz', 'comprehension-orale') }}" wire:navigate class="hidden shrink-0 border-b-2 border-foret py-3 text-base font-bold text-foret md:block">Explorer tous les quiz</a>
             </div>
@@ -128,7 +128,7 @@ new class extends Component
                 <h2 class="font-titre text-2xl leading-[1.15] tracking-[-0.5px] md:text-center md:text-[44px] md:leading-[1.05] md:tracking-[-1.5px]">Comment ça marche</h2>
                 <ol class="flex flex-col gap-[18px] md:grid md:grid-cols-3 md:gap-5">
                     @foreach ([
-                        ["T'entraîner gratuitement", 'Des quiz courts, corrigés et expliqués tout de suite.', "Choisis une épreuve et enchaîne des quiz courts. Chaque réponse est corrigée et expliquée tout de suite."],
+                        ["T'entraîner gratuitement", 'Des quiz courts, corrigés et expliqués à la fin.', "Choisis une épreuve et réponds aux questions comme le jour de l'examen. À la fin, chaque réponse est corrigée et expliquée."],
                         ['Passer un test blanc', "Les 4 épreuves avec le chrono de l'examen.", "Les 4 épreuves dans l'ordre et avec le chrono de l'examen, pour te mettre en conditions réelles."],
                         ['Cibler ce qui manque', 'Ton bilan te dit combien de points il te manque, épreuve par épreuve.', 'Ton bilan donne ton niveau par épreuve et te propose les quiz à refaire en priorité.'],
                     ] as $i => [$titre, $court, $long])
