@@ -2,12 +2,20 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     public function up(): void
     {
+        // Un déploiement interrompu peut laisser la table créée sans que la
+        // migration soit enregistrée (MySQL ne rejoue pas le DDL) : on repart
+        // de zéro tant qu'elle ne contient rien.
+        if (Schema::hasTable('articles') && DB::table('articles')->doesntExist()) {
+            Schema::drop('articles');
+        }
+
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete(); // auteur
