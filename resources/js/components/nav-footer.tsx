@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
+import { t } from '@/lib/i18n';
 import {
     SidebarGroup,
     SidebarGroupContent,
@@ -15,6 +16,8 @@ export type LienSecondaire = {
     icon: LucideIcon;
     /** Lien vers le site public Livewire : lien classique, pas de visite Inertia. */
     externe?: boolean;
+    /** Libellé écrit dans une autre langue que la page (sélecteur de langue) : affiché tel quel. */
+    langue?: string;
 };
 
 /** Liens secondaires, en bas de la sidebar. */
@@ -27,16 +30,20 @@ export function NavFooter({ items }: { items: LienSecondaire[] }) {
                 <SidebarMenu>
                     {items.map((item) => (
                         <SidebarMenuItem key={item.title}>
-                            <SidebarMenuButton asChild tooltip={item.title} className="text-sidebar-foreground/75 hover:text-sidebar-foreground">
+                            <SidebarMenuButton
+                                asChild
+                                tooltip={item.langue ? item.title : t(item.title)}
+                                className="text-sidebar-foreground/75 hover:text-sidebar-foreground"
+                            >
                                 {item.externe ? (
-                                    <a href={item.href}>
+                                    <a href={item.href} lang={item.langue} hrefLang={item.langue}>
                                         <item.icon />
-                                        <span>{item.title}</span>
+                                        <span>{item.langue ? item.title : t(item.title)}</span>
                                     </a>
                                 ) : (
                                     <Link href={item.href} onClick={() => setOpenMobile(false)}>
                                         <item.icon />
-                                        <span>{item.title}</span>
+                                        <span>{t(item.title)}</span>
                                     </Link>
                                 )}
                             </SidebarMenuButton>

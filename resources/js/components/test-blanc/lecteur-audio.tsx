@@ -1,5 +1,6 @@
 import { Lock, Pause, Play } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { t } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 const BARRES = [34, 18, 26, 10, 14, 14, 34, 10, 24, 10, 14, 26, 26, 14, 24, 14, 26, 10, 14, 24, 10, 26, 10, 24, 10, 18, 30, 26, 18, 14];
@@ -101,7 +102,7 @@ export function LecteurAudio({
                     type="button"
                     onClick={jouer}
                     disabled={enLecture || fini}
-                    aria-label={fini ? 'Enregistrement déjà écouté' : 'Écouter l’enregistrement'}
+                    aria-label={fini ? t('Enregistrement déjà écouté') : t("Écouter l'enregistrement")}
                     className="flex size-14 shrink-0 items-center justify-center rounded-full bg-foret text-white transition-opacity disabled:opacity-40"
                 >
                     {fini ? <Lock className="size-5" /> : enLecture ? <Pause className="size-5 fill-current" /> : <Play className="size-5 fill-current" />}
@@ -118,9 +119,9 @@ export function LecteurAudio({
             </div>
             <div className="flex justify-between gap-3 text-[13px] text-mousse-fonce">
                 <span className="font-bold" aria-live="polite">
-                    {fini ? 'Écoute terminée · lecture bloquée' : enLecture ? 'Écoute en cours…' : 'Une seule écoute, comme à l’examen'}
+                    {fini ? t('Écoute terminée · lecture bloquée') : enLecture ? t('Écoute en cours…') : t("Une seule écoute, comme à l'examen")}
                 </span>
-                <span className="shrink-0 whitespace-nowrap tabular-nums">
+                <span className="shrink-0 whitespace-nowrap tabular-nums" dir="ltr">
                     {format(fini ? duree : position)} / {format(duree)}
                 </span>
             </div>

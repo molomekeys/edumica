@@ -4,6 +4,7 @@
 @import 'tailwindcss' source(none);
 @import 'tw-animate-css';
 @import './theme.css';
+@import './article.css';
 
 @source '../js';
 
@@ -100,4 +101,19 @@
     body {
         @apply bg-background font-sans text-foreground antialiased;
     }
+}
+
+/* Éditeur d'articles (Tiptap) : texte d'invite, image sélectionnée. */
+.tiptap p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    color: var(--color-mousse);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.tiptap img.ProseMirror-selectednode {
+    outline: 3px solid var(--color-vert);
+    outline-offset: 3px;
 }

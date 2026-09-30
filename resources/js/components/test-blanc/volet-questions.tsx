@@ -2,6 +2,7 @@ import { ChevronRight, PanelLeftClose } from 'lucide-react';
 import type { Section } from '@/components/test-blanc/types';
 import { IconeEpreuve } from '@/components/icone-epreuve';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, useSidebar } from '@/components/ui/sidebar';
+import { t } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
 /**
@@ -30,36 +31,36 @@ export function VoletQuestions({
     const { isMobile, setOpen, setOpenMobile } = useSidebar();
 
     return (
-        <Sidebar collapsible="icon" aria-label="Liste des questions">
+        <Sidebar collapsible="icon" aria-label={t('Liste des questions')}>
             {/* Volet replié (grand écran) : une fine bande reste visible, la flèche le rouvre. */}
             <div className="hidden flex-col items-center gap-4 pt-4 group-data-[collapsible=icon]:flex">
                 <button
                     type="button"
                     onClick={() => setOpen(true)}
-                    aria-label="Afficher la liste des questions"
+                    aria-label={t('Afficher la liste des questions')}
                     className="flex size-9 items-center justify-center rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                 >
-                    <ChevronRight className="size-5" />
+                    <ChevronRight className="size-5 rtl:-scale-x-100" />
                 </button>
-                <span className="text-xs font-bold text-sidebar-foreground/70 tabular-nums [writing-mode:vertical-rl]">
+                <span className="text-xs font-bold text-sidebar-foreground/70 tabular-nums [writing-mode:vertical-rl]" dir="ltr">
                     {repondues} / {total}
                 </span>
             </div>
 
             <SidebarHeader className="h-16 group-data-[collapsible=icon]:hidden flex-row items-center justify-between gap-2 border-b border-sidebar-border px-4">
                 <div className="flex flex-col">
-                    <span className="text-[15px] font-extrabold">Questions</span>
+                    <span className="text-[15px] font-extrabold">{t('Questions')}</span>
                     <span className="text-xs font-semibold text-sidebar-foreground/65 tabular-nums">
-                        {repondues} sur {total} répondues
+                        {t(':repondues sur :total répondues', { repondues, total })}
                     </span>
                 </div>
                 <button
                     type="button"
                     onClick={() => (isMobile ? setOpenMobile(false) : setOpen(false))}
-                    aria-label="Masquer la liste des questions"
+                    aria-label={t('Masquer la liste des questions')}
                     className="flex size-9 items-center justify-center rounded-lg text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                 >
-                    <PanelLeftClose className="size-5" />
+                    <PanelLeftClose className="size-5 rtl:-scale-x-100" />
                 </button>
             </SidebarHeader>
 
@@ -79,7 +80,7 @@ export function VoletQuestions({
                             <div key={categorie.nom} className="flex flex-col gap-2">
                                 <div className="flex items-baseline justify-between gap-2 text-xs font-semibold text-sidebar-foreground/60">
                                     <span className="font-bold tracking-[0.08em] uppercase">{categorie.nom}</span>
-                                    <span className="tabular-nums">
+                                    <span className="tabular-nums" dir="ltr">
                                         {categorie.questions.filter(({ question }) => estRepondue(question.index)).length}/{categorie.questions.length}
                                     </span>
                                 </div>
@@ -96,7 +97,7 @@ export function VoletQuestions({
                                                     onAller(rang);
                                                     setOpenMobile(false);
                                                 }}
-                                                aria-label={`Question ${rang + 1}${repondue ? ', répondue' : ''}${marquee ? ', à revoir' : ''}`}
+                                                aria-label={[t('Question :numero', { numero: rang + 1 }), repondue && t('répondue'), marquee && t('à revoir')].filter(Boolean).join(', ')}
                                                 aria-current={rang === position ? 'step' : undefined}
                                                 className={cn(
                                                     'relative flex h-10 items-center justify-center rounded-lg text-sm font-bold tabular-nums transition-colors',
@@ -107,7 +108,7 @@ export function VoletQuestions({
                                                 )}
                                             >
                                                 {rang + 1}
-                                                {marquee && <span className="absolute -top-1 -right-1 size-3 rounded-full border-2 border-sidebar bg-peche" />}
+                                                {marquee && <span className="absolute -end-1 -top-1 size-3 rounded-full border-2 border-sidebar bg-peche" />}
                                             </button>
                                         );
                                     })}
@@ -121,14 +122,15 @@ export function VoletQuestions({
             <SidebarFooter className="group-data-[collapsible=icon]:hidden flex-row flex-wrap gap-x-4 gap-y-1.5 border-t border-sidebar-border px-4 py-3 text-xs text-sidebar-foreground/70">
                 <div className="flex items-center gap-1.5">
                     <span className="size-3 rounded bg-menthe" />
-                    Répondue
+                    {t('Répondue')}
                 </div>
                 <div className="flex items-center gap-1.5">
                     <span className="size-3 rounded border-[1.5px] border-white/40" />
-                    Sans réponse
+                    {t('Sans réponse')}
                 </div>
                 <div className="flex items-center gap-1.5">
-                    <span className="size-3 rounded-full bg-peche" />À revoir
+                    <span className="size-3 rounded-full bg-peche" />
+                    {t('À revoir')}
                 </div>
             </SidebarFooter>
         </Sidebar>

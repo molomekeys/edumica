@@ -4,7 +4,7 @@ use Livewire\Component;
 
 new class extends Component
 {
-    /** Les passages entre crochets restent à compléter avant la mise en ligne. */
+    /** Les passages entre crochets restent à compléter avant la mise en ligne. Traduits par site.document (lang/ar.json). */
     public const SECTIONS = [
         ['Objet', [
             "Les présentes conditions générales de vente encadrent l'achat des tests blancs proposés sur Edumica par [RAISON SOCIALE]. Tout achat implique leur acceptation.",
@@ -46,9 +46,9 @@ new class extends Component
 
     public function render()
     {
-        return $this->view()->title('Conditions générales de vente');
+        return $this->view()->title(__('Conditions générales de vente'));
     }
 };
 ?>
 
-<x-site.document titre="Conditions générales de vente" intro="Les règles qui s'appliquent quand tu achètes un test blanc sur Edumica." :sections="$this::SECTIONS" />
+<x-site.document :titre="__('Conditions générales de vente')" :intro="__('Les règles qui s\'appliquent quand tu achètes un test blanc sur Edumica.')" :sections="$this::SECTIONS" />

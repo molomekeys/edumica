@@ -8,8 +8,10 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { t } from '@/lib/i18n';
 import type { BreadcrumbItem as BreadcrumbItemType } from '@/types';
 
+/** Les titres sont des textes français (souvent déclarés au niveau du module), traduits au rendu. */
 export function Breadcrumbs({ breadcrumbs }: { breadcrumbs: BreadcrumbItemType[] }) {
     if (breadcrumbs.length === 0) {
         return null;
@@ -26,10 +28,10 @@ export function Breadcrumbs({ breadcrumbs }: { breadcrumbs: BreadcrumbItemType[]
                             {/* Sur mobile, seul le dernier niveau reste visible. */}
                             <BreadcrumbItem className={dernier ? 'min-w-0' : 'hidden md:inline-flex'}>
                                 {dernier ? (
-                                    <BreadcrumbPage className="truncate font-semibold">{item.title}</BreadcrumbPage>
+                                    <BreadcrumbPage className="truncate font-semibold">{t(item.title)}</BreadcrumbPage>
                                 ) : (
                                     <BreadcrumbLink asChild>
-                                        <Link href={item.href}>{item.title}</Link>
+                                        <Link href={item.href}>{t(item.title)}</Link>
                                     </BreadcrumbLink>
                                 )}
                             </BreadcrumbItem>

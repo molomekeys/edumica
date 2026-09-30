@@ -3,6 +3,7 @@
  */
 const routes = {
     accueil: () => '/',
+    langue: (langue: 'fr' | 'ar') => `/langue/${langue}`,
     deconnexion: () => '/deconnexion',
 
     espace: () => '/espace',
@@ -22,6 +23,17 @@ const routes = {
     'admin.questions.modifier': (question: number) => `/admin/questions/${question}`,
     'admin.questions.mettre-a-jour': (question: number) => `/admin/questions/${question}`,
     'admin.questions.supprimer': (question: number) => `/admin/questions/${question}`,
+
+    'admin.articles': (filtres: { q?: string; categorie?: string; statut?: string } = {}) => avecRequete('/admin/articles', filtres),
+    'admin.articles.creer': () => '/admin/articles/creer',
+    'admin.articles.enregistrer': () => '/admin/articles',
+    'admin.articles.image': () => '/admin/articles/images',
+    'admin.articles.modifier': (article: number) => `/admin/articles/${article}`,
+    'admin.articles.mettre-a-jour': (article: number) => `/admin/articles/${article}`,
+    'admin.articles.supprimer': (article: number) => `/admin/articles/${article}`,
+
+    // Site public (Livewire) : liens classiques, sans visite Inertia.
+    article: (slug: string) => `/articles/${slug}`,
 };
 
 type Routes = typeof routes;

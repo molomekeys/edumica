@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { listeFr } from '@/lib/format';
+import { t, tc } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import type { EpreuveCatalogue, TestComplet } from '@/types';
 
@@ -15,24 +16,24 @@ export function CatalogueTestsBlancs({ complet, epreuves }: { complet: TestCompl
         <div className="flex flex-col gap-3">
             {complet && (
                 <div className="relative isolate flex flex-col gap-4 overflow-hidden rounded-xl bg-foret p-5 text-white sm:flex-row sm:items-center md:p-6">
-                    <Arcs couleur="#FFB59E" className="-top-[140px] -right-[100px] size-[300px]" />
+                    <Arcs couleur="#FFB59E" className="-end-[100px] -top-[140px] size-[300px]" />
                     <div className="flex size-12 shrink-0 items-center justify-center rounded-[14px] bg-white/10 text-peche">
                         <Timer className="size-6" aria-hidden="true" />
                     </div>
                     <div className="flex flex-1 flex-col gap-0.5">
                         <div className="flex flex-wrap items-center gap-2">
-                            <span className="text-xs font-bold tracking-[0.14em] text-peche uppercase">Test blanc complet</span>
-                            {complet.enCours && <Badge className="bg-peche text-foret">En cours</Badge>}
+                            <span className="text-xs font-bold tracking-[0.14em] text-peche uppercase">{t('Test blanc complet')}</span>
+                            {complet.enCours && <Badge className="bg-peche text-foret">{t('En cours')}</Badge>}
                         </div>
                         <div className="text-[17px] font-bold">{listeFr(complet.epreuves)}</div>
                         <div className="text-sm text-white/70">
-                            {complet.questions} questions · {complet.duree} min · un seul chrono
+                            {tc(':count question|:count questions', complet.questions)} · {t(':minutes min', { minutes: complet.duree })} · {t('un seul chrono')}
                         </div>
                     </div>
                     <Button asChild size="lg" className="self-start bg-peche font-bold text-foret hover:bg-white sm:self-center">
                         <Link href={route('test-blanc.complet')}>
-                            {complet.enCours ? 'Reprendre le test complet' : 'Commencer le test complet'}
-                            <ArrowRight />
+                            {complet.enCours ? t('Reprendre le test complet') : t('Commencer le test complet')}
+                            <ArrowRight className="rtl:-scale-x-100" />
                         </Link>
                     </Button>
                 </div>
@@ -47,19 +48,21 @@ export function CatalogueTestsBlancs({ complet, epreuves }: { complet: TestCompl
                         <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                             <div className="flex flex-wrap items-center gap-2">
                                 <span className="text-[17px] font-bold">{epreuve.nom}</span>
-                                {epreuve.enCours && <Badge variant="secondary">En cours</Badge>}
+                                {epreuve.enCours && <Badge variant="secondary">{t('En cours')}</Badge>}
                             </div>
                             <span className="text-sm text-muted-foreground">
-                                {epreuve.questions ? `${epreuve.questions} questions · ${epreuve.duree} min` : 'Bientôt disponible'}
+                                {epreuve.questions
+                                    ? `${tc(':count question|:count questions', epreuve.questions)} · ${t(':minutes min', { minutes: epreuve.duree })}`
+                                    : t('Bientôt disponible')}
                             </span>
                         </div>
                         {epreuve.questions ? (
                             <Button asChild className="font-bold">
-                                <Link href={route('test-blanc', epreuve.slug)}>{epreuve.enCours ? 'Reprendre' : 'Commencer'}</Link>
+                                <Link href={route('test-blanc', epreuve.slug)}>{epreuve.enCours ? t('Reprendre') : t('Commencer')}</Link>
                             </Button>
                         ) : (
                             <Badge variant="outline" className="text-muted-foreground">
-                                Bientôt
+                                {t('Bientôt')}
                             </Badge>
                         )}
                     </Card>

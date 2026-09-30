@@ -4,8 +4,9 @@
 
 /* Identité « Menthe et forêt » */
 @theme {
-    --font-sans: 'Figtree', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+    /* Figtree et Archivo n'ont pas de glyphes arabes : le navigateur passe aux polices Noto pour l'arabe. */
+    --font-sans: 'Figtree', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Archivo', 'Noto Kufi Arabic', ui-sans-serif, system-ui, sans-serif;
 
     --color-foret: #0B2E1C;
     --color-vert: #0E7A45;
@@ -49,4 +50,16 @@
     font-family: var(--font-display);
     font-stretch: 125%;
     font-weight: 800;
+}
+
+/*
+ * Arabe : écriture liée, donc sans interlettrage (il casserait les liaisons entre lettres),
+ * et des titres moins serrés pour laisser la place aux points et aux hampes.
+ */
+:lang(ar) * {
+    letter-spacing: normal !important;
+}
+
+:lang(ar) .font-titre {
+    line-height: 1.3 !important;
 }

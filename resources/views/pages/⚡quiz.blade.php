@@ -53,7 +53,7 @@ new class extends Component
 
     public function render()
     {
-        return $this->view()->title('Quiz · '.$this->epreuve->nom);
+        return $this->view()->title(__('Quiz · :epreuve', ['epreuve' => __($this->epreuve->nom)]));
     }
 
     #[Computed]
@@ -181,16 +181,16 @@ new class extends Component
         <div class="mx-auto flex max-w-5xl flex-col gap-1.5 px-2 pb-2.5 md:gap-2 md:px-6 md:pb-3">
             <div class="flex h-12 items-center gap-2 md:h-14">
                 {{-- En plein quiz, on demande confirmation avant de perdre ses réponses. --}}
-                <a href="{{ route('accueil') }}" aria-label="Quitter le quiz"
-                    @if ($enCours) onclick="return confirm('Quitter le quiz ? Tes réponses ne seront pas gardées.')" @else wire:navigate @endif
+                <a href="{{ route('accueil') }}" aria-label="{{ __('Quitter le quiz') }}"
+                    @if ($enCours) onclick="return confirm({{ \Illuminate\Support\Js::from(__('Quitter le quiz ? Tes réponses ne seront pas gardées.')) }})" @else wire:navigate @endif
                     class="flex size-11 shrink-0 items-center justify-center rounded-full text-foret hover:bg-brume">
                     <x-icone nom="croix" class="size-6" />
                 </a>
-                <div class="min-w-0 flex-1 truncate text-[15px] font-bold md:text-base">{{ $epreuve->nom }}</div>
+                <div class="min-w-0 flex-1 truncate text-[15px] font-bold md:text-base">{{ __($epreuve->nom) }}</div>
 
                 @if ($enCours)
                     <div class="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-bold tabular-nums transition-colors"
-                        :class="reste <= 60 ? 'bg-peche-clair' : 'bg-brume'" role="timer" aria-label="Temps restant">
+                        :class="reste <= 60 ? 'bg-peche-clair' : 'bg-brume'" role="timer" aria-label="{{ __('Temps restant') }}" dir="ltr">
                         <x-icone nom="horloge" class="size-4" />
                         <span x-text="affichage">{{ gmdate('i:s', max(0, $fin - now()->getTimestamp())) }}</span>
                     </div>
@@ -200,7 +200,7 @@ new class extends Component
             @if ($enCours)
                 {{-- Progression : un segment par question, sans dévoiler la correction --}}
                 <div class="flex items-center gap-3 px-2">
-                    <ol class="flex flex-1 gap-1" role="progressbar" aria-label="Progression" aria-valuemin="1" aria-valuemax="{{ $this->total }}" aria-valuenow="{{ $index + 1 }}">
+                    <ol class="flex flex-1 gap-1" role="progressbar" aria-label="{{ __('Progression') }}" aria-valuemin="1" aria-valuemax="{{ $this->total }}" aria-valuenow="{{ $index + 1 }}">
                         @for ($i = 0; $i < $this->total; $i++)
                             <li @class([
                                 'h-1.5 flex-1 rounded-full transition-colors duration-300 md:h-2',
@@ -211,7 +211,7 @@ new class extends Component
                             ])></li>
                         @endfor
                     </ol>
-                    <div class="text-[13px] font-bold text-mousse tabular-nums">{{ $index + 1 }}<span class="font-semibold"> / {{ $this->total }}</span></div>
+                    <div class="text-[13px] font-bold text-mousse tabular-nums" dir="ltr">{{ $index + 1 }}<span class="font-semibold"> / {{ $this->total }}</span></div>
                 </div>
             @endif
         </div>
@@ -221,9 +221,9 @@ new class extends Component
         {{-- Aucun quiz pour cette épreuve --}}
         <main class="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-4 p-5 text-center">
             <div class="flex size-16 items-center justify-center rounded-full bg-vert text-white"><x-icone :nom="$epreuve->icone" class="size-7" /></div>
-            <h1 class="font-titre text-[22px] leading-tight tracking-[-0.5px] md:text-[28px]">Pas encore de quiz pour cette épreuve</h1>
-            <p class="max-w-sm text-base leading-normal text-mousse">Les quiz d'{{ mb_strtolower($epreuve->nom) }} ne sont pas encore disponibles. Entraîne-toi sur une autre épreuve en attendant.</p>
-            <a href="{{ route('epreuves') }}" wire:navigate class="mt-2 flex h-14 w-full items-center justify-center rounded-2xl bg-foret px-8 text-[17px] font-bold text-white hover:bg-vert hover:text-white sm:w-auto">Choisir une autre épreuve</a>
+            <h1 class="font-titre text-[22px] leading-tight tracking-[-0.5px] md:text-[28px]">{{ __('Pas encore de quiz pour cette épreuve') }}</h1>
+            <p class="max-w-sm text-base leading-normal text-mousse">{{ __("Les quiz d':epreuve ne sont pas encore disponibles. Entraîne-toi sur une autre épreuve en attendant.", ['epreuve' => mb_strtolower(__($epreuve->nom))]) }}</p>
+            <a href="{{ route('epreuves') }}" wire:navigate class="mt-2 flex h-14 w-full items-center justify-center rounded-2xl bg-foret px-8 text-[17px] font-bold text-white hover:bg-vert hover:text-white sm:w-auto">{{ __('Choisir une autre épreuve') }}</a>
         </main>
     @elseif ($termine)
         {{-- Résultat et correction complète --}}
@@ -237,21 +237,21 @@ new class extends Component
             <div class="flex flex-col gap-4 lg:sticky lg:top-28">
                 <section class="relative isolate flex flex-col gap-3 overflow-hidden rounded-[28px] bg-menthe px-5 py-6 md:px-7 md:py-8">
                     <x-arcs class="-top-[120px] -right-[120px] size-[300px]" />
-                    <div class="text-[13px] font-bold text-mousse-fonce">Quiz terminé · {{ $epreuve->nom }}</div>
-                    <div class="font-titre text-[56px] leading-none tracking-[-1.5px] md:text-[72px]">{{ $this->bonnes }}<span class="text-[28px] text-mousse-fonce md:text-[34px]"> / {{ $this->total }}</span></div>
+                    <div class="text-[13px] font-bold text-mousse-fonce">{{ __('Quiz terminé · :epreuve', ['epreuve' => __($epreuve->nom)]) }}</div>
+                    <div class="font-titre text-[56px] leading-none tracking-[-1.5px] md:text-[72px]" dir="ltr">{{ $this->bonnes }}<span class="text-[28px] text-mousse-fonce md:text-[34px]"> / {{ $this->total }}</span></div>
                     <h1 class="font-titre text-[26px] leading-[1.1] tracking-[-0.5px]">
-                        @if ($taux >= 0.8) Très bon travail.
-                        @elseif ($taux >= 0.5) C'est un bon début.
-                        @else Continue à t'entraîner.
+                        @if ($taux >= 0.8) {{ __('Très bon travail.') }}
+                        @elseif ($taux >= 0.5) {{ __("C'est un bon début.") }}
+                        @else {{ __("Continue à t'entraîner.") }}
                         @endif
                     </h1>
                     <p class="text-base leading-normal text-mousse-fonce">
-                        {{ $this->bonnes }} {{ $this->bonnes > 1 ? 'bonnes réponses' : 'bonne réponse' }} sur {{ $this->total }}.
-                        @if (count($reponses) < $this->total) Le temps est écoulé avant la fin. @endif
+                        {{ trans_choice(':count bonne réponse sur :total.|:count bonnes réponses sur :total.', $this->bonnes, ['total' => $this->total]) }}
+                        @if (count($reponses) < $this->total) {{ __('Le temps est écoulé avant la fin.') }} @endif
                     </p>
 
                     <dl class="mt-1 grid grid-cols-3 gap-2 text-center">
-                        @foreach ([['Réussies', $this->bonnes, 'text-vert'], ['À revoir', $fausses, 'text-foret'], ['Sans réponse', $passees, 'text-mousse']] as [$libelle, $nombre, $couleur])
+                        @foreach ([[__('Réussies'), $this->bonnes, 'text-vert'], [__('À revoir'), $fausses, 'text-foret'], [__('Sans réponse'), $passees, 'text-mousse']] as [$libelle, $nombre, $couleur])
                             <div class="flex flex-col-reverse rounded-2xl bg-white/70 px-2 py-2.5">
                                 <dt class="text-[12px] font-semibold text-mousse-fonce md:text-[13px]">{{ $libelle }}</dt>
                                 <dd class="font-titre text-[22px] leading-tight {{ $couleur }}">{{ $nombre }}</dd>
@@ -262,19 +262,19 @@ new class extends Component
 
                 <section class="flex flex-col gap-2.5 px-2 lg:px-0">
                     <a href="{{ route('quiz', $epreuve) }}" wire:navigate class="flex h-14 items-center justify-center gap-2 rounded-2xl bg-foret text-[17px] font-bold text-white hover:bg-vert hover:text-white">
-                        <x-icone nom="relancer" class="size-5" />Refaire un quiz
+                        <x-icone nom="relancer" class="size-5" />{{ __('Refaire un quiz') }}
                     </a>
-                    <a href="{{ route('epreuves') }}" wire:navigate class="flex h-[52px] items-center justify-center rounded-2xl border-[1.5px] border-foret text-base font-bold text-foret hover:bg-foret/5">Choisir une autre épreuve</a>
+                    <a href="{{ route('epreuves') }}" wire:navigate class="flex h-[52px] items-center justify-center rounded-2xl border-[1.5px] border-foret text-base font-bold text-foret hover:bg-foret/5">{{ __('Choisir une autre épreuve') }}</a>
                 </section>
             </div>
 
             <section class="flex flex-col gap-3 px-1 md:px-0" aria-labelledby="titre-correction">
                 <div class="flex flex-col gap-3 px-1 sm:flex-row sm:items-end sm:justify-between">
-                    <h2 id="titre-correction" class="font-titre text-[22px] tracking-[-0.5px] md:text-[26px]">La correction</h2>
+                    <h2 id="titre-correction" class="font-titre text-[22px] tracking-[-0.5px] md:text-[26px]">{{ __('La correction') }}</h2>
 
                     {{-- Filtres --}}
-                    <div class="flex gap-1 rounded-full bg-brume p-1 text-sm font-bold" role="group" aria-label="Filtrer la correction">
-                        @foreach (['toutes' => 'Toutes', 'revoir' => 'À revoir', 'reussies' => 'Réussies'] as $cle => $libelle)
+                    <div class="flex gap-1 rounded-full bg-brume p-1 text-sm font-bold" role="group" aria-label="{{ __('Filtrer la correction') }}">
+                        @foreach (['toutes' => __('Toutes'), 'revoir' => __('À revoir'), 'reussies' => __('Réussies')] as $cle => $libelle)
                             <button type="button" @click="filtre = '{{ $cle }}'" :aria-pressed="filtre === '{{ $cle }}'"
                                 class="min-h-9 flex-1 rounded-full px-3.5 transition-colors sm:flex-none"
                                 :class="filtre === '{{ $cle }}' ? 'bg-foret text-white' : 'text-foret hover:bg-white'">{{ $libelle }}</button>
@@ -297,7 +297,7 @@ new class extends Component
                             ])>
                             <h3>
                                 <button type="button" @click="ouvert = !ouvert" :aria-expanded="ouvert" aria-controls="correction-{{ $i }}"
-                                    class="flex w-full items-start gap-3 px-3.5 py-3.5 text-left md:px-4">
+                                    class="flex w-full items-start gap-3 px-3.5 py-3.5 text-start md:px-4">
                                     @if ($etat === 'bonne')
                                         <span class="flex size-7 shrink-0 items-center justify-center rounded-full bg-vert text-white"><x-icone nom="coche" :epaisseur="3" class="size-4" /></span>
                                     @elseif ($etat === 'fausse')
@@ -307,15 +307,15 @@ new class extends Component
                                     @endif
                                     <span class="flex min-w-0 flex-1 flex-col gap-0.5">
                                         <span class="text-[12px] font-bold tracking-wide text-mousse uppercase">
-                                            Question {{ $i + 1 }} ·
+                                            {{ __('Question :numero', ['numero' => $i + 1]) }} ·
                                             @switch($etat)
-                                                @case('bonne') Réussie @break
-                                                @case('fausse') À revoir @break
-                                                @case('passee') Passée @break
-                                                @default Pas répondu
+                                                @case('bonne') {{ __('Réussie') }} @break
+                                                @case('fausse') {{ __('À revoir') }} @break
+                                                @case('passee') {{ __('Passée') }} @break
+                                                @default {{ __('Pas répondu') }}
                                             @endswitch
                                         </span>
-                                        <span class="text-[15px] leading-snug font-semibold md:text-base">{{ $q->enonce }}</span>
+                                        <span lang="fr" dir="ltr" class="text-start text-[15px] leading-snug font-semibold md:text-base">{{ $q->enonce }}</span>
                                     </span>
                                     <x-icone nom="bas" class="mt-1 size-5 shrink-0 text-mousse transition-transform" x-bind:class="ouvert && 'rotate-180'" />
                                 </button>
@@ -323,7 +323,7 @@ new class extends Component
 
                             <div id="correction-{{ $i }}" x-show="ouvert" x-collapse @if ($etat === 'bonne') x-cloak @endif class="border-t-[1.5px] border-ligne">
                                 <div class="flex flex-col gap-3 px-3.5 pt-3.5 pb-4 md:px-4">
-                                    <ul class="flex flex-col gap-2">
+                                    <ul lang="fr" dir="ltr" class="flex flex-col gap-2">
                                         @foreach ($q->choix as $c => $libelle)
                                             @php($estBonne = $c === $q->bonne_reponse)
                                             @php($estChoisie = $c === $choisi)
@@ -342,27 +342,31 @@ new class extends Component
                                                 @endif
                                                 <span class="min-w-0 flex-1 py-2">{{ $libelle }}</span>
                                                 @if ($estChoisie)
-                                                    <span @class(['shrink-0 text-[12px]', 'text-vert' => $estBonne, 'text-foret' => ! $estBonne])>Ta réponse</span>
+                                                    <span @class(['shrink-0 text-[12px]', 'text-vert' => $estBonne, 'text-foret' => ! $estBonne])>{{ __('Ta réponse') }}</span>
                                                 @elseif ($estBonne)
-                                                    <span class="shrink-0 text-[12px] text-vert">Bonne réponse</span>
+                                                    <span class="shrink-0 text-[12px] text-vert">{{ __('Bonne réponse') }}</span>
                                                 @endif
                                             </li>
                                         @endforeach
                                     </ul>
 
                                     <div class="flex flex-col gap-1.5 rounded-2xl bg-brume p-3.5">
-                                        <div class="text-[15px] font-extrabold">{{ $etat === 'bonne' ? $q->feedback : 'Pourquoi ?' }}</div>
-                                        <p class="text-[15px] leading-[1.55] text-mousse-fonce">{{ $q->explication }}</p>
+                                        @if ($etat === 'bonne')
+                                            <div lang="fr" dir="ltr" class="text-[15px] font-extrabold">{{ $q->feedback }}</div>
+                                        @else
+                                            <div class="text-[15px] font-extrabold">{{ __('Pourquoi ?') }}</div>
+                                        @endif
+                                        <p lang="fr" dir="ltr" class="text-[15px] leading-[1.55] text-mousse-fonce">{{ $q->explication }}</p>
                                     </div>
 
                                     @if ($q->transcription || $q->support)
                                         <div x-data="{ document: false }">
                                             <button type="button" @click="document = !document" :aria-expanded="document" aria-controls="document-{{ $i }}"
                                                 class="flex min-h-11 items-center gap-1.5 text-[15px] font-bold text-vert">
-                                                <span x-text="document ? '{{ $q->transcription ? 'Masquer la transcription' : 'Masquer le document' }}' : '{{ $q->transcription ? 'Lire la transcription' : 'Relire le document' }}'">{{ $q->transcription ? 'Lire la transcription' : 'Relire le document' }}</span>
+                                                <span x-text="document ? @js($q->transcription ? __('Masquer la transcription') : __('Masquer le document')) : @js($q->transcription ? __('Lire la transcription') : __('Relire le document'))">{{ $q->transcription ? __('Lire la transcription') : __('Relire le document') }}</span>
                                                 <x-icone nom="bas" class="size-[18px] transition-transform" x-bind:class="document && 'rotate-180'" />
                                             </button>
-                                            <p id="document-{{ $i }}" x-show="document" x-collapse x-cloak class="rounded-xl border-[1.5px] border-ligne p-3.5 text-[15px] leading-[1.55] whitespace-pre-line">{{ $q->transcription ?: $q->support }}</p>
+                                            <p id="document-{{ $i }}" lang="fr" dir="ltr" x-show="document" x-collapse x-cloak class="rounded-xl border-[1.5px] border-ligne p-3.5 text-[15px] leading-[1.55] whitespace-pre-line">{{ $q->transcription ?: $q->support }}</p>
                                         </div>
                                     @endif
                                 </div>
@@ -371,16 +375,16 @@ new class extends Component
                     @endforeach
                 </ol>
 
-                <p x-show="filtre === 'revoir' && {{ $fausses + $passees }} === 0" x-cloak class="rounded-2xl bg-menthe p-4 text-center text-[15px] font-semibold">Rien à revoir, tout est juste.</p>
-                <p x-show="filtre === 'reussies' && {{ $this->bonnes }} === 0" x-cloak class="rounded-2xl bg-brume p-4 text-center text-[15px] font-semibold">Aucune bonne réponse cette fois. Relis les explications et retente ta chance.</p>
+                <p x-show="filtre === 'revoir' && {{ $fausses + $passees }} === 0" x-cloak class="rounded-2xl bg-menthe p-4 text-center text-[15px] font-semibold">{{ __('Rien à revoir, tout est juste.') }}</p>
+                <p x-show="filtre === 'reussies' && {{ $this->bonnes }} === 0" x-cloak class="rounded-2xl bg-brume p-4 text-center text-[15px] font-semibold">{{ __('Aucune bonne réponse cette fois. Relis les explications et retente ta chance.') }}</p>
             </section>
 
             <section class="mx-2 flex flex-col gap-3 rounded-[20px] bg-peche-clair p-[18px] md:mx-0 md:p-6 lg:col-span-2 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
                 <div class="flex flex-col gap-2">
-                    <div class="font-titre text-xl tracking-[-0.5px]">Tu veux connaître ton niveau&nbsp;?</div>
-                    <p class="text-[15px] leading-normal">Un test blanc reprend les 4 épreuves avec le chrono de l'examen et te donne un niveau estimé CECRL et NCLC.</p>
+                    <div class="font-titre text-xl tracking-[-0.5px]">{{ __('Tu veux connaître ton niveau ?') }}</div>
+                    <p class="text-[15px] leading-normal">{{ __('Un test blanc reprend les 4 épreuves avec le chrono de l\'examen et te donne un niveau estimé CECRL et NCLC.') }}</p>
                 </div>
-                <a href="{{ route('bilan') }}" wire:navigate class="shrink-0 self-start text-[15px] font-bold text-foret underline decoration-2 underline-offset-4 lg:self-center">Voir un exemple de bilan</a>
+                <a href="{{ route('bilan') }}" wire:navigate class="shrink-0 self-start text-[15px] font-bold text-foret underline decoration-2 underline-offset-4 lg:self-center">{{ __('Voir un exemple de bilan') }}</a>
             </section>
         </main>
     @else
@@ -408,18 +412,18 @@ new class extends Component
                     @endif
 
                     @if ($question->support)
-                        <div class="max-h-[45dvh] overflow-y-auto overscroll-contain rounded-[20px] bg-brume p-4 text-[15px] leading-[1.6] whitespace-pre-line md:p-5 md:text-base lg:max-h-[calc(100dvh-16rem)]">{{ $question->support }}</div>
+                        <div lang="fr" dir="ltr" class="max-h-[45dvh] overflow-y-auto overscroll-contain rounded-[20px] bg-brume p-4 text-[15px] leading-[1.6] whitespace-pre-line md:p-5 md:text-base lg:max-h-[calc(100dvh-16rem)]">{{ $question->support }}</div>
                     @endif
                 </div>
             @endif
 
             <div class="flex flex-col gap-4 md:gap-5">
-                <h1 id="enonce" class="font-titre text-xl leading-[1.2] tracking-[-0.5px] md:text-[26px]">{{ $question->enonce }}</h1>
+                <h1 id="enonce" lang="fr" dir="ltr" class="font-titre text-xl leading-[1.2] tracking-[-0.5px] md:text-[26px]">{{ $question->enonce }}</h1>
 
-                <div role="radiogroup" aria-labelledby="enonce" class="flex flex-col gap-2.5">
+                <div role="radiogroup" aria-labelledby="enonce" lang="fr" dir="ltr" class="flex flex-col gap-2.5">
                     @foreach ($question->choix as $i => $libelle)
                         <button type="button" role="radio" aria-checked="{{ $choix === $i ? 'true' : 'false' }}" wire:click="choisir({{ $i }})" @class([
-                            'flex min-h-14 w-full items-center gap-3 rounded-2xl px-4 text-left text-base text-foret transition-[colors,transform] active:scale-[0.99]',
+                            'flex min-h-14 w-full items-center gap-3 rounded-2xl px-4 text-start text-base text-foret transition-[colors,transform] active:scale-[0.99]',
                             'border-2 border-foret bg-brume font-bold' => $choix === $i,
                             'border-[1.5px] border-ligne bg-white hover:border-mousse' => $choix !== $i,
                         ])>
@@ -434,8 +438,11 @@ new class extends Component
                 </div>
 
                 <p class="hidden text-[13px] text-mousse md:block">
-                    Raccourcis : <kbd class="rounded bg-brume px-1.5 py-0.5 font-sans font-bold">A</kbd>–<kbd class="rounded bg-brume px-1.5 py-0.5 font-sans font-bold">{{ $lettres[count($question->choix) - 1] }}</kbd> pour choisir,
-                    <kbd class="rounded bg-brume px-1.5 py-0.5 font-sans font-bold">Entrée</kbd> pour continuer. La correction s'affiche à la fin du quiz.
+                    {!! __("Raccourcis : :premiere–:derniere pour choisir, :entree pour continuer. La correction s'affiche à la fin du quiz.", [
+                        'premiere' => '<kbd class="rounded bg-brume px-1.5 py-0.5 font-sans font-bold">A</kbd>',
+                        'derniere' => '<kbd class="rounded bg-brume px-1.5 py-0.5 font-sans font-bold">'.$lettres[count($question->choix) - 1].'</kbd>',
+                        'entree' => '<kbd class="rounded bg-brume px-1.5 py-0.5 font-sans font-bold">'.e(__('Entrée')).'</kbd>',
+                    ]) !!}
                 </p>
             </div>
         </main>
@@ -443,10 +450,10 @@ new class extends Component
         {{-- Actions --}}
         <div class="sticky bottom-0 z-10 border-t-[1.5px] border-ligne bg-white/95 backdrop-blur">
             <div class="mx-auto flex max-w-2xl gap-2.5 px-4 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] md:pb-6">
-                <button type="button" wire:click="passer" wire:loading.attr="disabled" class="h-14 shrink-0 rounded-2xl border-[1.5px] border-ligne bg-white px-[18px] text-base font-bold text-foret hover:border-mousse">Passer</button>
+                <button type="button" wire:click="passer" wire:loading.attr="disabled" class="h-14 shrink-0 rounded-2xl border-[1.5px] border-ligne bg-white px-[18px] text-base font-bold text-foret hover:border-mousse">{{ __('Passer') }}</button>
                 <button type="button" wire:click="suivante" wire:loading.attr="disabled" @disabled($choix === null)
                     class="flex h-14 min-w-0 flex-1 items-center justify-center gap-2 rounded-2xl bg-foret px-4 text-[17px] font-bold text-white hover:bg-vert disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-foret">
-                    <span class="truncate">{{ $derniere ? 'Terminer et voir la correction' : 'Question suivante' }}</span>
+                    <span class="truncate">{{ $derniere ? __('Terminer et voir la correction') : __('Question suivante') }}</span>
                     @unless ($derniere)<x-icone nom="droite" :epaisseur="2.6" class="size-5 shrink-0" />@endunless
                 </button>
             </div>

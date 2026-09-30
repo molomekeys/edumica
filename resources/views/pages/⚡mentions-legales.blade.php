@@ -4,7 +4,7 @@ use Livewire\Component;
 
 new class extends Component
 {
-    /** Les passages entre crochets restent à compléter avant la mise en ligne. */
+    /** Les passages entre crochets restent à compléter avant la mise en ligne. Traduits par site.document (lang/ar.json). */
     public const SECTIONS = [
         ['Éditeur du site', [
             'Le site Edumica est édité par [RAISON SOCIALE], [FORME JURIDIQUE] au capital de [CAPITAL], immatriculée sous le numéro [NUMÉRO D\'IMMATRICULATION].',
@@ -35,9 +35,9 @@ new class extends Component
 
     public function render()
     {
-        return $this->view()->title('Mentions légales');
+        return $this->view()->title(__('Mentions légales'));
     }
 };
 ?>
 
-<x-site.document titre="Mentions légales" intro="Qui édite Edumica, qui l'héberge et les règles d'utilisation du site." :sections="$this::SECTIONS" />
+<x-site.document :titre="__('Mentions légales')" :intro="__('Qui édite Edumica, qui l\'héberge et les règles d\'utilisation du site.')" :sections="$this::SECTIONS" />

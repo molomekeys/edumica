@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\DefinirLangue;
 use App\Http\Middleware\EstAdmin;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Auth\AuthenticationException;
@@ -17,7 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias(['admin' => EstAdmin::class, 'inertia' => HandleInertiaRequests::class]);
-        $middleware->redirectGuestsTo(fn () => route('connexion'));
+        $middleware->web(append: [DefinirLangue::class]);
+        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('admin', 'admin/*') ? route('admin.connexion') : route('connexion'));
         $middleware->redirectUsersTo(fn () => route('espace'));
         // État de la sidebar des dashboards, écrit par le navigateur.
         $middleware->encryptCookies(except: ['sidebar_state']);

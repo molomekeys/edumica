@@ -51,6 +51,7 @@ class EspaceController extends Controller
     /**
      * Tests blancs proposés : le test complet (toutes les épreuves qui ont des questions)
      * puis un test par épreuve. « enCours » signale un test commencé à reprendre.
+     * Les noms et descriptions sont traduits dans la langue de l'interface (lang/ar.json).
      *
      * @return array{complet: ?array{epreuves: list<string>, questions: int, duree: int, enCours: bool}, epreuves: list<array<string, mixed>>}
      */
@@ -63,7 +64,7 @@ class EspaceController extends Controller
 
         return [
             'complet' => $disponibles->isEmpty() ? null : [
-                'epreuves' => $disponibles->pluck('nom')->values()->all(),
+                'epreuves' => $disponibles->map(fn (Epreuve $epreuve) => __($epreuve->nom))->values()->all(),
                 'questions' => $disponibles->sum('questions_count'),
                 'duree' => $disponibles->sum($duree),
                 'enCours' => $enCours->containsStrict(null),
@@ -71,8 +72,8 @@ class EspaceController extends Controller
             'epreuves' => $epreuves->map(fn (Epreuve $epreuve) => [
                 'id' => $epreuve->id,
                 'slug' => $epreuve->slug,
-                'nom' => $epreuve->nom,
-                'description' => $epreuve->description,
+                'nom' => __($epreuve->nom),
+                'description' => __($epreuve->description),
                 'icone' => $epreuve->icone,
                 'questions' => $epreuve->questions_count,
                 'duree' => $duree($epreuve),

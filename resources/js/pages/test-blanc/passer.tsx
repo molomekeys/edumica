@@ -12,6 +12,7 @@ import { VoletQuestions } from '@/components/test-blanc/volet-questions';
 import { Button } from '@/components/ui/button';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { useFlashToast } from '@/hooks/use-flash-toast';
+import { t } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 
@@ -67,7 +68,7 @@ function TestEnCours({ epreuve, tentative, epreuves, questions }: Props & { tent
         termine.current = true;
         setEnvoi(true);
         router.post(route('test-blanc.terminer', tentative.id), etat, {
-            onError: () => toast.error('Le test n’a pas pu être terminé. Réessaie.'),
+            onError: () => toast.error(t('Le test n’a pas pu être terminé. Réessaie.')),
             onFinish: () => {
                 termine.current = false;
                 setEnvoi(false);
@@ -146,7 +147,7 @@ function TestEnCours({ epreuve, tentative, epreuves, questions }: Props & { tent
 
     return (
         <SidebarProvider cookieName={COOKIE_VOLET} defaultOpen={!document.cookie.split('; ').includes(`${COOKIE_VOLET}=false`)} className="bg-papier">
-            <Head title={complet ? 'Test blanc complet' : `Test blanc · ${epreuve.nom}`} />
+            <Head title={complet ? t('Test blanc complet') : t('Test blanc · :epreuve', { epreuve: epreuve.nom })} />
 
             <VoletQuestions
                 sections={sections}
@@ -165,20 +166,21 @@ function TestEnCours({ epreuve, tentative, epreuves, questions }: Props & { tent
                     <div className="flex h-16 items-center gap-2 px-3 md:gap-3 md:px-5">
                         <SidebarTrigger
                             className="size-10 shrink-0 rounded-xl text-white/80 hover:bg-white/10 hover:text-white"
-                            aria-label="Afficher ou masquer la liste des questions"
+                            aria-label={t('Afficher ou masquer la liste des questions')}
                         />
                         <div className="flex min-w-0 flex-1 flex-col">
                             <span className="truncate text-[11px] font-bold tracking-[0.14em] text-peche uppercase">
-                                {complet ? 'Test blanc complet' : 'Test blanc'}
+                                {complet ? t('Test blanc complet') : t('Test blanc')}
                             </span>
-                            <span className="truncate text-[15px] leading-tight font-bold">{complet ? 'Toutes les épreuves' : epreuve.nom}</span>
+                            <span className="truncate text-[15px] leading-tight font-bold">{complet ? t('Toutes les épreuves') : epreuve.nom}</span>
                         </div>
                         <span className="hidden text-sm font-semibold text-white/70 tabular-nums md:inline">
-                            {repondues} / {total} répondues
+                            {t(':repondues / :total répondues', { repondues, total })}
                         </span>
                         <div
                             role="timer"
-                            aria-label="Temps restant"
+                            aria-label={t('Temps restant')}
+                            dir="ltr"
                             className={cn(
                                 'flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[15px] font-bold tabular-nums transition-colors',
                                 reste <= 300 ? 'bg-peche text-foret' : 'bg-white/10',
@@ -191,7 +193,7 @@ function TestEnCours({ epreuve, tentative, epreuves, questions }: Props & { tent
                             className="h-10 shrink-0 rounded-xl bg-peche px-3.5 font-bold text-foret hover:bg-white sm:px-4"
                             onClick={() => setConfirmer(true)}
                         >
-                            Terminer
+                            {t('Terminer')}
                         </Button>
                     </div>
                     <div className="h-1 bg-white/10" aria-hidden="true">
@@ -203,7 +205,7 @@ function TestEnCours({ epreuve, tentative, epreuves, questions }: Props & { tent
                 <main key={question.id} className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5 px-4 py-6 md:py-10">
                     <div className="flex flex-wrap items-center gap-2 text-[13px] font-bold">
                         <span className="rounded-full bg-foret px-3 py-1 text-white tabular-nums">
-                            Question {position + 1} / {total}
+                            {t('Question :numero / :total', { numero: position + 1, total })}
                         </span>
                         {complet && <span className="rounded-full bg-peche-clair px-3 py-1">{nomsEpreuves.get(question.epreuve_id)}</span>}
                         <span className="text-cendre">{question.categorie}</span>
@@ -220,16 +222,16 @@ function TestEnCours({ epreuve, tentative, epreuves, questions }: Props & { tent
                     )}
 
                     {question.support && (
-                        <div className="rounded-[20px] border-[1.5px] border-trait bg-white p-5 text-[15px] leading-[1.65] whitespace-pre-line">
+                        <div lang="fr" dir="ltr" className="rounded-[20px] border-[1.5px] border-trait bg-white p-5 text-[15px] leading-[1.65] whitespace-pre-line">
                             {question.support}
                         </div>
                     )}
 
-                    <h1 id="enonce" className="font-titre text-[22px] leading-[1.2] tracking-[-0.5px]">
+                    <h1 id="enonce" lang="fr" dir="ltr" className="font-titre text-[22px] leading-[1.2] tracking-[-0.5px]">
                         {question.enonce}
                     </h1>
 
-                    <div role="radiogroup" aria-labelledby="enonce" className="flex flex-col gap-2.5">
+                    <div role="radiogroup" aria-labelledby="enonce" lang="fr" dir="ltr" className="flex flex-col gap-2.5">
                         {question.choix.map((libelle, i) => (
                             <button
                                 key={i}
@@ -239,7 +241,7 @@ function TestEnCours({ epreuve, tentative, epreuves, questions }: Props & { tent
                                 disabled={verrouille}
                                 onClick={() => choisir(i)}
                                 className={cn(
-                                    'flex min-h-14 items-center gap-3 rounded-2xl px-4 text-left text-base transition-colors',
+                                    'flex min-h-14 items-center gap-3 rounded-2xl px-4 text-start text-base transition-colors',
                                     choix === i ? 'border-2 border-foret bg-peche-clair font-bold' : 'border-[1.5px] border-trait bg-white hover:border-cendre',
                                 )}
                             >
@@ -262,7 +264,7 @@ function TestEnCours({ epreuve, tentative, epreuves, questions }: Props & { tent
                             onClick={() => choisir(null)}
                             className="self-start text-sm font-semibold text-cendre underline underline-offset-4 hover:text-foret"
                         >
-                            Effacer ma réponse
+                            {t('Effacer ma réponse')}
                         </button>
                     )}
                 </main>
@@ -276,10 +278,10 @@ function TestEnCours({ epreuve, tentative, epreuves, questions }: Props & { tent
                             className="h-12 rounded-2xl border-[1.5px] border-trait bg-white px-3 font-bold sm:px-4"
                             disabled={position === 0}
                             onClick={() => aller(position - 1)}
-                            aria-label="Question précédente"
+                            aria-label={t('Question précédente')}
                         >
-                            <ChevronLeft className="size-5" />
-                            <span className="hidden sm:inline">Précédente</span>
+                            <ChevronLeft className="size-5 rtl:-scale-x-100" />
+                            <span className="hidden sm:inline">{t('Précédente')}</span>
                         </Button>
                         <Button
                             variant="outline"
@@ -293,13 +295,13 @@ function TestEnCours({ epreuve, tentative, epreuves, questions }: Props & { tent
                             )}
                         >
                             <span className={cn('size-2.5 rounded-full', marquee ? 'bg-foret' : 'bg-peche')} />
-                            <span className="sm:hidden">À revoir</span>
-                            <span className="hidden sm:inline">{marquee ? 'Marquée à revoir' : 'Marquer à revoir'}</span>
+                            <span className="sm:hidden">{t('À revoir')}</span>
+                            <span className="hidden sm:inline">{marquee ? t('Marquée à revoir') : t('Marquer à revoir')}</span>
                         </Button>
                         {position + 1 < total ? (
                             <Button size="lg" className="h-12 rounded-2xl px-4 font-bold" onClick={() => aller(position + 1)}>
-                                Suivante
-                                <ChevronRight className="size-5" />
+                                {t('Suivante')}
+                                <ChevronRight className="size-5 rtl:-scale-x-100" />
                             </Button>
                         ) : (
                             <Button
@@ -307,7 +309,7 @@ function TestEnCours({ epreuve, tentative, epreuves, questions }: Props & { tent
                                 className="h-12 rounded-2xl bg-peche px-4 font-bold text-foret hover:bg-foret hover:text-white"
                                 onClick={() => setConfirmer(true)}
                             >
-                                Terminer
+                                {t('Terminer')}
                             </Button>
                         )}
                     </div>
@@ -329,15 +331,17 @@ function TestEnCours({ epreuve, tentative, epreuves, questions }: Props & { tent
 function TestVide({ complet }: { complet: boolean }) {
     return (
         <div className="flex min-h-svh flex-col bg-papier text-foret">
-            <Head title="Test blanc" />
+            <Head title={t('Test blanc')} />
             <header className="flex h-16 items-center gap-3 bg-foret px-5 text-white">
                 <AppLogoIcon inverse className="size-8 shrink-0" />
-                <span className="text-[15px] font-bold">Test blanc</span>
+                <span className="text-[15px] font-bold">{t('Test blanc')}</span>
             </header>
             <main className="flex flex-1 flex-col items-center justify-center gap-4 p-5 text-center">
-                <h1 className="font-titre text-[22px] leading-tight">Pas encore de test blanc {complet ? 'disponible' : 'pour cette épreuve'}</h1>
+                <h1 className="font-titre text-[22px] leading-tight">
+                    {complet ? t('Pas encore de test blanc disponible') : t('Pas encore de test blanc pour cette épreuve')}
+                </h1>
                 <Button asChild size="lg" className="h-12 rounded-2xl px-6 font-bold">
-                    <Link href={route('espace')}>Retour à mon espace</Link>
+                    <Link href={route('espace')}>{t('Retour à mon espace')}</Link>
                 </Button>
             </main>
         </div>

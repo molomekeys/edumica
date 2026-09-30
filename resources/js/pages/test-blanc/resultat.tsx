@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { libelleNclc } from '@/lib/format';
+import { t, tc } from '@/lib/i18n';
 import { route, routeTestBlanc } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 
@@ -45,35 +46,35 @@ export default function ResultatTestBlanc({ epreuve, tentative, epreuves, correc
 
     return (
         <>
-            <Head title={`Résultat · ${complet ? 'Test blanc complet' : epreuve.nom}`} />
+            <Head title={t('Résultat · :test', { test: complet ? t('Test blanc complet') : epreuve.nom })} />
 
             <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-8 p-4 md:p-6">
                 <section className="relative isolate flex flex-col gap-4 overflow-hidden rounded-[24px] bg-foret px-6 py-8 text-white md:px-10 md:py-10">
-                    <Arcs couleur="#FFB59E" className="-top-[110px] -right-[110px] size-[320px]" />
-                    <div className="text-xs font-bold tracking-[0.14em] text-peche uppercase">Test blanc terminé</div>
-                    <h1 className="font-titre text-[26px] leading-tight tracking-[-0.5px] md:text-[32px]">{complet ? 'Toutes les épreuves' : epreuve.nom}</h1>
+                    <Arcs couleur="#FFB59E" className="-end-[110px] -top-[110px] size-[320px]" />
+                    <div className="text-xs font-bold tracking-[0.14em] text-peche uppercase">{t('Test blanc terminé')}</div>
+                    <h1 className="font-titre text-[26px] leading-tight tracking-[-0.5px] md:text-[32px]">{complet ? t('Toutes les épreuves') : epreuve.nom}</h1>
                     <div className="flex flex-wrap items-end gap-x-8 gap-y-3">
                         <div className="flex flex-col gap-1">
-                            <div className="font-titre text-[60px] leading-none tracking-[-1.5px] md:text-[72px]">
+                            <div className="font-titre text-[60px] leading-none tracking-[-1.5px] md:text-[72px]" dir="ltr">
                                 {tentative.bonnes}
                                 <span className="text-[26px] text-white/50 md:text-[32px]"> / {tentative.total}</span>
                             </div>
-                            <div className="text-sm font-semibold text-white/70">bonnes réponses</div>
+                            <div className="text-sm font-semibold text-white/70">{tc('bonne réponse|bonnes réponses', tentative.bonnes)}</div>
                         </div>
                         <div className="flex flex-col gap-1 pb-1">
                             <span className="self-start rounded-full bg-peche px-3.5 py-1 text-sm font-extrabold text-foret">{libelleNclc(tentative.niveau)}</span>
                             <span className="text-sm font-semibold text-white/70">
                                 {seule?.score != null
-                                    ? `Score estimé : ${seule.score} / ${seule.maximum}`
-                                    : 'Niveau global : le plus faible des épreuves'}
+                                    ? t('Score estimé : :score / :maximum', { score: seule.score, maximum: seule.maximum ?? '' })
+                                    : t('Niveau global : le plus faible des épreuves')}
                             </span>
                         </div>
                     </div>
-                    <p className="text-[13px] text-white/55">Estimation indicative calculée sur des questions d’entraînement.</p>
+                    <p className="text-[13px] text-white/55">{t('Estimation indicative calculée sur des questions d’entraînement.')}</p>
                 </section>
 
                 <section className="flex flex-col gap-3">
-                    <h2 className="font-titre text-xl tracking-[-0.5px]">{complet ? 'Par épreuve' : 'Par catégorie'}</h2>
+                    <h2 className="font-titre text-xl tracking-[-0.5px]">{complet ? t('Par épreuve') : t('Par catégorie')}</h2>
                     <div className={cn('grid gap-3', complet && 'md:grid-cols-2')}>
                         {epreuves.map((stats) => (
                             <Card key={stats.epreuve_id} className="gap-4 p-5">
@@ -84,7 +85,7 @@ export default function ResultatTestBlanc({ epreuve, tentative, epreuves, correc
                                     <div className="flex min-w-0 flex-1 flex-col">
                                         <span className="truncate font-bold">{stats.nom}</span>
                                         <span className="text-sm text-muted-foreground tabular-nums">
-                                            {stats.bonnes} / {stats.total} bonnes réponses
+                                            {t(':bonnes / :total bonnes réponses', { bonnes: stats.bonnes, total: stats.total })}
                                             {stats.score !== null && ` · ${stats.score} / ${stats.maximum}`}
                                         </span>
                                     </div>
@@ -97,7 +98,7 @@ export default function ResultatTestBlanc({ epreuve, tentative, epreuves, correc
                                         <div key={categorie.nom} className="flex flex-col gap-1.5">
                                             <div className="flex justify-between gap-2 text-sm font-semibold">
                                                 <span>{categorie.nom}</span>
-                                                <span className="text-muted-foreground tabular-nums">
+                                                <span className="text-muted-foreground tabular-nums" dir="ltr">
                                                     {categorie.bonnes} / {categorie.total}
                                                 </span>
                                             </div>
@@ -113,7 +114,7 @@ export default function ResultatTestBlanc({ epreuve, tentative, epreuves, correc
                 </section>
 
                 <section className="flex flex-col gap-3">
-                    <h2 className="font-titre text-xl tracking-[-0.5px]">Correction</h2>
+                    <h2 className="font-titre text-xl tracking-[-0.5px]">{t('Correction')}</h2>
                     {epreuves.map((stats) => (
                         <div key={stats.epreuve_id} className="flex flex-col gap-2">
                             {complet && <h3 className="mt-2 text-[13px] font-bold tracking-[0.12em] text-muted-foreground uppercase">{stats.nom}</h3>}
@@ -132,11 +133,11 @@ export default function ResultatTestBlanc({ epreuve, tentative, epreuves, correc
                     <Button asChild size="lg" className="h-14 flex-1 rounded-2xl text-[17px] font-bold">
                         <Link href={routeTestBlanc(epreuve?.slug)}>
                             <RotateCcw className="size-5" />
-                            Recommencer
+                            {t('Recommencer')}
                         </Link>
                     </Button>
                     <Button asChild size="lg" variant="outline" className="h-14 flex-1 rounded-2xl border-[1.5px] border-foret text-base font-bold">
-                        <Link href={route('espace')}>Retour à mon espace</Link>
+                        <Link href={route('espace')}>{t('Retour à mon espace')}</Link>
                     </Button>
                 </div>
             </div>
@@ -160,14 +161,14 @@ function LigneCorrection({ correction, numero }: { correction: Correction; numer
         <li className="flex items-start gap-3 rounded-2xl border bg-card px-4 py-3.5">
             {correcte ? (
                 <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-foret text-white">
-                    <Check className="size-4" strokeWidth={3} aria-label="Bonne réponse" />
+                    <Check className="size-4" strokeWidth={3} aria-label={t('Bonne réponse')} />
                 </span>
             ) : reponse !== null ? (
                 <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-peche text-foret">
-                    <X className="size-4" strokeWidth={3} aria-label="Mauvaise réponse" />
+                    <X className="size-4" strokeWidth={3} aria-label={t('Mauvaise réponse')} />
                 </span>
             ) : (
-                <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-[13px] font-bold text-muted-foreground" aria-label="Sans réponse">
+                <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-[13px] font-bold text-muted-foreground" aria-label={t('Sans réponse')}>
                     –
                 </span>
             )}
@@ -175,12 +176,28 @@ function LigneCorrection({ correction, numero }: { correction: Correction; numer
                 <span className="text-xs font-bold text-muted-foreground">
                     Q{numero} · {correction.categorie}
                 </span>
-                <span className="text-[15px] font-semibold">{correction.enonce}</span>
-                <span className="text-[13px] text-muted-foreground">
-                    {reponse === null ? 'Sans réponse · ' : !correcte ? `Ta réponse : ${choix[reponse] ?? '?'} · ` : ''}
-                    Bonne réponse : <span className="font-bold text-foreground">{choix[bonne]}</span>
+                <span lang="fr" dir="ltr" className="text-start text-[15px] font-semibold">
+                    {correction.enonce}
                 </span>
-                <span className="mt-1 text-[13px] leading-normal">{correction.explication}</span>
+                <span className="text-[13px] text-muted-foreground">
+                    {reponse === null ? `${t('Sans réponse')} · ` : null}
+                    {reponse !== null && !correcte && (
+                        <>
+                            {t('Ta réponse :')}{' '}
+                            <span lang="fr" dir="ltr">
+                                {choix[reponse] ?? '?'}
+                            </span>{' '}
+                            ·{' '}
+                        </>
+                    )}
+                    {t('Bonne réponse :')}{' '}
+                    <span lang="fr" dir="ltr" className="font-bold text-foreground">
+                        {choix[bonne]}
+                    </span>
+                </span>
+                <span lang="fr" dir="ltr" className="mt-1 text-start text-[13px] leading-normal">
+                    {correction.explication}
+                </span>
             </div>
         </li>
     );

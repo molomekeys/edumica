@@ -1,0 +1,184 @@
+/*
+ * Typographie de lecture des articles, partagée par le site (page article) et l'admin
+ * (éditeur et aperçu) : ce qu'on écrit dans l'éditeur a le rendu de la page publique.
+ */
+.contenu-article {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--color-mousse-fonce);
+    overflow-wrap: break-word;
+
+    & > * + * {
+        margin-top: 1.15em;
+    }
+
+    & > :first-child {
+        margin-top: 0;
+    }
+
+    & h2,
+    & h3,
+    & h4 {
+        color: var(--color-foret);
+        scroll-margin-top: 1.5rem;
+        text-wrap: balance;
+    }
+
+    & h2 {
+        margin-top: 2em;
+        font-family: var(--font-display);
+        font-stretch: 125%;
+        font-weight: 800;
+        font-size: 1.5em;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+    }
+
+    & h3 {
+        margin-top: 1.75em;
+        font-size: 1.25em;
+        font-weight: 800;
+        line-height: 1.3;
+    }
+
+    & h4 {
+        margin-top: 1.5em;
+        font-size: 1.05em;
+        font-weight: 800;
+    }
+
+    & h2 + *,
+    & h3 + *,
+    & h4 + * {
+        margin-top: 0.6em;
+    }
+
+    & strong,
+    & b {
+        color: var(--color-foret);
+        font-weight: 700;
+    }
+
+    & a {
+        color: var(--color-vert);
+        font-weight: 600;
+        text-decoration: underline;
+        text-decoration-color: color-mix(in oklab, var(--color-vert) 35%, transparent);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+        transition: text-decoration-color 0.2s;
+    }
+
+    & a:hover {
+        text-decoration-color: var(--color-vert);
+    }
+
+    & ul,
+    & ol {
+        padding-left: 1.4em;
+    }
+
+    & ul {
+        list-style: disc;
+    }
+
+    & ol {
+        list-style: decimal;
+    }
+
+    & li {
+        padding-left: 0.3em;
+    }
+
+    & li + li {
+        margin-top: 0.45em;
+    }
+
+    & li::marker {
+        color: var(--color-vert);
+        font-weight: 800;
+    }
+
+    & li > p {
+        margin: 0;
+    }
+
+    & blockquote {
+        position: relative;
+        margin-block: 1.8em;
+        padding: 1.3em 1.5em 1.3em 3.4em;
+        border-radius: 22px;
+        background: var(--color-brume);
+        color: var(--color-foret);
+        font-size: 1.08em;
+        font-weight: 600;
+        line-height: 1.55;
+    }
+
+    & blockquote::before {
+        content: '“';
+        position: absolute;
+        top: 0.1em;
+        left: 0.35em;
+        color: var(--color-peche);
+        font-family: var(--font-display);
+        font-stretch: 125%;
+        font-weight: 800;
+        font-size: 3.2em;
+        line-height: 1;
+    }
+
+    & blockquote > * + * {
+        margin-top: 0.6em;
+    }
+
+    & img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        margin-block: 1.8em;
+        border-radius: 20px;
+    }
+
+    & figcaption {
+        margin-top: -1em;
+        font-size: 0.85em;
+        color: var(--color-mousse);
+        text-align: center;
+    }
+
+    & hr {
+        margin-block: 2.5em;
+        border: 0;
+        border-top: 1.5px solid var(--color-ligne);
+    }
+
+    & code {
+        padding: 0.1em 0.35em;
+        border-radius: 6px;
+        background: var(--color-brume);
+        color: var(--color-foret);
+        font-size: 0.9em;
+    }
+
+    & pre {
+        padding: 1em 1.2em;
+        border-radius: 16px;
+        background: var(--color-foret);
+        color: var(--color-menthe);
+        overflow-x: auto;
+        font-size: 0.9em;
+    }
+
+    & pre code {
+        padding: 0;
+        background: none;
+        color: inherit;
+    }
+}
+
+@media (min-width: 768px) {
+    .contenu-article {
+        font-size: 18.5px;
+    }
+}

@@ -6,8 +6,10 @@ use App\Models\Epreuve;
 use App\Models\Tentative;
 use App\Models\User;
 use Database\Seeders\EpreuveSeeder;
+use Database\Seeders\UtilisateurSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
+use Livewire\Livewire;
 use Tests\TestCase;
 
 class EspaceTest extends TestCase
@@ -21,23 +23,71 @@ class EspaceTest extends TestCase
         $this->seed(EpreuveSeeder::class);
     }
 
-    public function test_la_connexion_demo_connecte_un_utilisateur_ou_un_admin(): void
+    public function test_la_connexion_demo_connecte_un_utilisateur(): void
     {
         $this->get('/espace')->assertRedirect('/connexion');
-        $this->get('/connexion')->assertOk()->assertSee('Continuer avec Google');
+        $this->get('/connexion')->assertOk()->assertSee('Continuer avec Google')->assertDontSee('Compte admin');
 
         $this->post('/connexion/demo/utilisateur')->assertRedirect('/espace');
         $this->assertAuthenticated();
         $this->assertFalse(auth()->user()->is_admin);
         $this->get('/espace')->assertOk()->assertInertia(fn (Assert $page) => $page->component('espace/index'));
         $this->get('/admin')->assertForbidden();
-
-        $this->post('/deconnexion')->assertRedirect('/');
-        $this->assertGuest();
-
-        $this->post('/connexion/demo/admin')->assertRedirect('/admin');
-        $this->get('/admin')->assertOk()->assertInertia(fn (Assert $page) => $page->component('admin/questions/index'));
         $this->post('/connexion/demo/pirate')->assertRedirect('/espace'); // déjà connecté
+    }
+
+    public function test_la_connexion_demo_ne_donne_plus_de_compte_admin(): void
+    {
+        $this->post('/connexion/demo/admin')->assertNotFound();
+        $this->assertGuest();
+    }
+
+    public function test_l_admin_se_connecte_par_courriel_et_mot_de_passe(): void
+    {
+        $this->seed(UtilisateurSeeder::class);
+
+        $this->get('/admin')->assertRedirect('/admin/connexion');
+        $this->get('/admin/connexion')->assertOk()->assertSee('Espace administrateur');
+
+        Livewire::test('pages::admin-connexion')
+            ->set('email', config('auth.admin.email'))
+            ->set('password', config('auth.admin.password'))
+            ->call('connecter')
+            ->assertRedirect('/admin');
+
+        $this->assertAuthenticatedAs(User::where('email', config('auth.admin.email'))->first());
+        $this->get('/admin')->assertOk()->assertInertia(fn (Assert $page) => $page->component('admin/questions/index'));
+    }
+
+    public function test_la_connexion_admin_refuse_un_mauvais_mot_de_passe_ou_un_non_admin(): void
+    {
+        $this->seed(UtilisateurSeeder::class);
+        User::factory()->create(['email' => 'eleve@example.com', 'password' => 'secret123']);
+
+        Livewire::test('pages::admin-connexion')
+            ->set('email', config('auth.admin.email'))
+            ->set('password', 'mauvais')
+            ->call('connecter')
+            ->assertHasErrors('email');
+
+        Livewire::test('pages::admin-connexion')
+            ->set('email', 'eleve@example.com')
+            ->set('password', 'secret123')
+            ->call('connecter')
+            ->assertHasErrors('email');
+
+        $this->assertGuest();
+    }
+
+    public function test_il_n_y_a_qu_un_seul_compte_admin(): void
+    {
+        User::factory()->create(['is_admin' => true]);
+
+        $this->seed(UtilisateurSeeder::class);
+        $this->seed(UtilisateurSeeder::class);
+
+        $this->assertSame(1, User::where('is_admin', true)->count());
+        $this->assertTrue(User::where('email', config('auth.admin.email'))->value('is_admin'));
     }
 
     public function test_un_role_inconnu_est_refuse(): void

@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useSidebar } from '@/components/ui/sidebar';
 import { UserInfo } from '@/components/user-info';
+import { t } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import type { User } from '@/types';
 
@@ -20,7 +21,7 @@ export function UserMenuContent({ user }: { user: User }) {
     return (
         <>
             <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
                     <UserInfo user={user} showEmail />
                 </div>
             </DropdownMenuLabel>
@@ -29,14 +30,14 @@ export function UserMenuContent({ user }: { user: User }) {
                 <DropdownMenuItem asChild>
                     <Link href={route('espace')} className="w-full cursor-pointer" onClick={fermer}>
                         <LayoutDashboard />
-                        Mon espace
+                        {t('Mon espace')}
                     </Link>
                 </DropdownMenuItem>
                 {user.is_admin && (
                     <DropdownMenuItem asChild>
                         <Link href={route('admin.questions')} className="w-full cursor-pointer" onClick={fermer}>
                             <ShieldCheck />
-                            Admin
+                            {t('Admin')}
                         </Link>
                     </DropdownMenuItem>
                 )}
@@ -44,8 +45,8 @@ export function UserMenuContent({ user }: { user: User }) {
             <DropdownMenuSeparator />
             {/* La déconnexion renvoie vers l'accueil Livewire, chargé entièrement (Inertia::location). */}
             <DropdownMenuItem className="cursor-pointer" onSelect={() => router.post(route('deconnexion'))}>
-                <LogOut />
-                Déconnexion
+                <LogOut className="rtl:-scale-x-100" />
+                {t('Déconnexion')}
             </DropdownMenuItem>
         </>
     );

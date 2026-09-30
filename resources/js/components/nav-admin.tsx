@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ChevronRight, ListChecks } from 'lucide-react';
+import { ChevronRight, ListChecks, Newspaper } from 'lucide-react';
 import { actifMenthe } from '@/components/nav-main';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
@@ -17,10 +17,11 @@ import {
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { route } from '@/lib/routes';
 
-/** Navigation admin : les questions, avec les épreuves en sous-menu repliable qui filtrent la liste. */
+/** Navigation admin : les questions, avec les épreuves en sous-menu repliable qui filtrent la liste, et les articles du blog. */
 export function NavAdmin() {
     const { navigation } = usePage().props;
     const { chemin, parametres, estSousChemin } = useCurrentUrl();
+    const surArticles = estSousChemin(route('admin.articles'));
     const { setOpenMobile } = useSidebar();
 
     // Filtre actif de la liste ; null hors de la liste (formulaire d'une question).
@@ -33,7 +34,7 @@ export function NavAdmin() {
             <SidebarMenu>
                 <Collapsible asChild defaultOpen className="group/collapsible">
                     <SidebarMenuItem>
-                        <SidebarMenuButton asChild isActive={estSousChemin('/admin')} tooltip="Questions" className={actifMenthe}>
+                        <SidebarMenuButton asChild isActive={estSousChemin('/admin') && !surArticles} tooltip="Questions" className={actifMenthe}>
                             <Link href={route('admin.questions')} onClick={() => setOpenMobile(false)}>
                                 <ListChecks />
                                 <span>Questions</span>
@@ -63,6 +64,14 @@ export function NavAdmin() {
                         </CollapsibleContent>
                     </SidebarMenuItem>
                 </Collapsible>
+                <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={surArticles} tooltip="Articles" className={actifMenthe}>
+                        <Link href={route('admin.articles')} onClick={() => setOpenMobile(false)}>
+                            <Newspaper />
+                            <span>Articles</span>
+                        </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
             </SidebarMenu>
         </SidebarGroup>
     );

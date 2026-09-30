@@ -5,6 +5,37 @@ document.addEventListener('alpine:init', () => {
     };
 
     /**
+     * Menu déroulant de l'en-tête : s'ouvre au clic ou au survol (avec un court délai à la sortie
+     * pour laisser le temps de rejoindre le panneau), se ferme au clic dehors, à Échap ou quand le focus sort.
+     */
+    window.Alpine.data('deroulant', () => ({
+        ouvert: false,
+        survol: false,
+        delai: null,
+        entrer() {
+            clearTimeout(this.delai);
+            this.survol = this.ouvert = true;
+        },
+        sortir() {
+            clearTimeout(this.delai);
+            this.survol = false;
+            this.delai = setTimeout(() => (this.ouvert = false), 150);
+        },
+        // Sous la souris, le survol a déjà ouvert le panneau : le clic ne doit pas le refermer.
+        basculer() {
+            clearTimeout(this.delai);
+            this.ouvert = this.survol || !this.ouvert;
+        },
+        fermer(focus = false) {
+            this.ouvert = false;
+            focus && this.$refs.bouton.focus();
+        },
+        quitter(event) {
+            this.$el.contains(event.relatedTarget) || (this.ouvert = false);
+        },
+    }));
+
+    /**
      * Compte à rebours du quiz, calé sur une échéance fixée par le serveur.
      */
     window.Alpine.data('chrono', (fin, surFin) => ({

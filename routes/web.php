@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\ConnexionController;
 use App\Http\Controllers\EspaceController;
+use App\Http\Controllers\LangueController;
 use App\Http\Controllers\TestBlancController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/langue/{langue}', LangueController::class)->name('langue');
 
 Route::livewire('/', 'pages::home')->name('accueil');
 Route::livewire('/quiz/{epreuve}', 'pages::quiz')->name('quiz');
@@ -12,7 +16,10 @@ Route::livewire('/bilan', 'pages::bilan')->name('bilan');
 
 Route::middleware('guest')->group(function () {
     Route::livewire('/connexion', 'pages::connexion')->name('connexion');
+    Route::get('/connexion/google', [ConnexionController::class, 'google'])->name('connexion.google');
+    Route::get('/connexion/google/retour', [ConnexionController::class, 'retourGoogle'])->name('connexion.google.retour');
     Route::post('/connexion/demo/{role}', [ConnexionController::class, 'demo'])->name('connexion.demo');
+    Route::livewire('/admin/connexion', 'pages::admin-connexion')->name('admin.connexion');
 });
 
 Route::middleware('auth')->group(function () {
@@ -39,6 +46,14 @@ Route::middleware(['auth', 'inertia'])->group(function () {
         Route::get('/questions/{question}', [QuestionController::class, 'edit'])->name('questions.modifier');
         Route::put('/questions/{question}', [QuestionController::class, 'update'])->name('questions.mettre-a-jour');
         Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.supprimer');
+
+        Route::get('/articles', [ArticleController::class, 'index'])->name('articles');
+        Route::get('/articles/creer', [ArticleController::class, 'create'])->name('articles.creer');
+        Route::post('/articles', [ArticleController::class, 'store'])->name('articles.enregistrer');
+        Route::post('/articles/images', [ArticleController::class, 'image'])->name('articles.image');
+        Route::get('/articles/{article}', [ArticleController::class, 'edit'])->name('articles.modifier');
+        Route::put('/articles/{article}', [ArticleController::class, 'update'])->name('articles.mettre-a-jour');
+        Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])->name('articles.supprimer');
     });
 });
 
@@ -48,6 +63,8 @@ Route::livewire('/tests-blancs', 'pages::tests-blancs')->name('tests-blancs');
 Route::livewire('/scores-nclc', 'pages::scores')->name('scores');
 Route::livewire('/tarifs', 'pages::tarifs')->name('tarifs');
 Route::livewire('/faq', 'pages::faq')->name('faq');
+Route::livewire('/articles', 'pages::articles')->name('articles');
+Route::livewire('/articles/{article:slug}', 'pages::article')->name('article');
 Route::livewire('/contact', 'pages::contact')->name('contact');
 
 Route::livewire('/mentions-legales', 'pages::mentions-legales')->name('mentions-legales');

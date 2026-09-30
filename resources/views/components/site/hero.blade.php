@@ -7,9 +7,9 @@
         <x-arcs class="-bottom-[260px] -left-[200px] hidden size-[560px] lg:block" />
 
         <div class="flex flex-col gap-4 md:gap-5 lg:flex-1">
-            <nav aria-label="Fil d'Ariane">
+            <nav aria-label="{{ __('Fil d\'Ariane') }}">
                 <ol class="flex flex-wrap items-center gap-1.5 text-[13px] font-semibold text-mousse-fonce md:text-sm">
-                    <li><a href="{{ route('accueil') }}" wire:navigate class="text-mousse-fonce">Accueil</a></li>
+                    <li><a href="{{ route('accueil') }}" wire:navigate class="text-mousse-fonce">{{ __('Accueil') }}</a></li>
                     @foreach ($fil as $url => $libelle)
                         <li aria-hidden="true">/</li>
                         <li><a href="{{ $url }}" wire:navigate class="text-mousse-fonce">{{ $libelle }}</a></li>

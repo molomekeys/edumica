@@ -30,7 +30,7 @@ class TestBlancController extends Controller
             ?? Tentative::demarrer($user, $epreuve);
 
         return Inertia::render('test-blanc/passer', [
-            'epreuve' => $epreuve?->only(['nom', 'slug']),
+            'epreuve' => $epreuve ? ['nom' => __($epreuve->nom), 'slug' => $epreuve->slug] : null,
             'tentative' => $tentative ? [
                 'id' => $tentative->id,
                 'fin' => $tentative->fin_chrono->getTimestamp(),
@@ -39,13 +39,13 @@ class TestBlancController extends Controller
                 'marquees' => $tentative->marquees,
                 'ecoutees' => $tentative->ecoutees,
             ] : null,
-            'epreuves' => Tentative::epreuvesPour($epreuve)->map->only(['id', 'nom', 'icone'])->values(),
+            'epreuves' => Tentative::epreuvesPour($epreuve)->map(fn (Epreuve $e) => ['id' => $e->id, 'nom' => __($e->nom), 'icone' => $e->icone])->values(),
             // Ni la bonne réponse ni l'explication : elles n'arrivent qu'avec le résultat.
             'questions' => $tentative?->questionsDuTest()->map(fn (Question $question, int $index) => [
                 'index' => $index,
                 'id' => $question->id,
                 'epreuve_id' => $question->epreuve_id,
-                'categorie' => $question->categorie,
+                'categorie' => __($question->categorie),
                 'enonce' => $question->enonce,
                 'support' => $question->support,
                 'audio' => $question->urlAudio(),
@@ -83,7 +83,7 @@ class TestBlancController extends Controller
 
         $tentative->delete();
 
-        return to_route('espace')->with('succes', 'Test abandonné : tes réponses n\'ont pas été gardées.');
+        return to_route('espace')->with('succes', __('Test abandonné : tes réponses n\'ont pas été gardées.'));
     }
 
     public function resultat(Tentative $tentative): Response|RedirectResponse
@@ -105,7 +105,7 @@ class TestBlancController extends Controller
         $epreuves = Epreuve::whereKey(array_column($tentative->resultat, 'epreuve_id'))->get()->keyBy('id');
 
         return Inertia::render('test-blanc/resultat', [
-            'epreuve' => $tentative->epreuve?->only(['nom', 'slug']),
+            'epreuve' => $tentative->epreuve ? ['nom' => __($tentative->epreuve->nom), 'slug' => $tentative->epreuve->slug] : null,
             'tentative' => [
                 'id' => $tentative->id,
                 'bonnes' => $tentative->bonnes,
@@ -117,7 +117,8 @@ class TestBlancController extends Controller
                 ->filter(fn (array $stats) => $epreuves->has($stats['epreuve_id']))
                 ->map(fn (array $stats) => [
                     ...$stats,
-                    'nom' => $epreuves[$stats['epreuve_id']]->nom,
+                    'categories' => array_map(fn (array $categorie) => ['nom' => __($categorie['nom'])] + $categorie, $stats['categories']),
+                    'nom' => __($epreuves[$stats['epreuve_id']]->nom),
                     'icone' => $epreuves[$stats['epreuve_id']]->icone,
                     'maximum' => Nclc::EPREUVES[$epreuves[$stats['epreuve_id']]->code][2] ?? null,
                 ])
@@ -125,7 +126,7 @@ class TestBlancController extends Controller
             'corrections' => $tentative->questionsDuTest()->map(fn (Question $question, int $index) => [
                 'index' => $index,
                 'epreuve_id' => $question->epreuve_id,
-                'categorie' => $question->categorie,
+                'categorie' => __($question->categorie),
                 'enonce' => $question->enonce,
                 'choix' => $question->choix,
                 'bonne_reponse' => $question->bonne_reponse,

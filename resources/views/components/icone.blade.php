@@ -19,8 +19,17 @@
         'gauche' => '<path d="M15 6l-6 6 6 6"/>',
         'bas' => '<path d="M6 9l6 6 6-6"/>',
         'partager' => '<path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/>',
+        'globe' => '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/>',
+        'fleche' => '<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>',
+        'article' => '<path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h7M9 17h5"/>',
+        'question' => '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.1"/><path d="M12 17h.01"/>',
+        'enveloppe' => '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/>',
         'relancer' => '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>',
+        'sortie' => '<path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 16l-4-4 4-4"/><path d="M6 12h10"/>',
+        'maison' => '<path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/>',
+        'bouclier' => '<path d="M12 3l8 3v6c0 4.5-3.5 8-8 9-4.5-1-8-4.5-8-9V6z"/>',
     ];
 @endphp
 
-<svg {{ $attributes }} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ $epaisseur }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{!! $traces[$nom] !!}</svg>
+{{-- Les flèches horizontales se retournent en arabe (lecture de droite à gauche). --}}
+<svg {{ $attributes->class(['rtl:-scale-x-100' => in_array($nom, ['droite', 'gauche', 'fleche'])]) }} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{{ $epaisseur }}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{!! $traces[$nom] !!}</svg>

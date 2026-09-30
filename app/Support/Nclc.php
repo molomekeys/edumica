@@ -56,7 +56,12 @@ class Nclc
 
     public static function libelle(string $epreuve): string
     {
-        return self::EPREUVES[$epreuve][0];
+        return __(self::EPREUVES[$epreuve][0]);
+    }
+
+    public static function libelleCourt(string $epreuve): string
+    {
+        return __(self::EPREUVES[$epreuve][1]);
     }
 
     /** Niveau NCLC atteint pour un score, ou null sous le NCLC 5. */
