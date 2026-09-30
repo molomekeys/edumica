@@ -3,28 +3,29 @@
         <div class="grid gap-10 md:grid-cols-4">
             <div class="flex flex-col gap-3.5">
                 <div class="font-titre text-lg text-foret md:text-[22px]">edumica</div>
-                <p class="leading-relaxed md:hidden">Préparation indépendante au TCF, non affiliée à France Éducation international. Tests d'entraînement non officiels.</p>
-                <p class="hidden leading-relaxed md:block">Préparation indépendante au TCF Canada et au TCF Tout public.</p>
+                <p class="leading-relaxed md:hidden">{{ __('Préparation indépendante au TCF, non affiliée à France Éducation international. Tests d\'entraînement non officiels.') }}</p>
+                <p class="hidden leading-relaxed md:block">{{ __('Préparation indépendante au TCF Canada et au TCF Tout public.') }}</p>
             </div>
 
             @foreach ([
-                'Épreuves' => [
-                    route('epreuve', 'comprehension-orale') => 'Compréhension orale',
-                    route('epreuve', 'comprehension-ecrite') => 'Compréhension écrite',
-                    route('epreuve', 'expression-ecrite') => 'Expression écrite',
-                    route('epreuve', 'expression-orale') => 'Expression orale',
+                __('Épreuves') => [
+                    route('epreuve', 'comprehension-orale') => __('Compréhension orale'),
+                    route('epreuve', 'comprehension-ecrite') => __('Compréhension écrite'),
+                    route('epreuve', 'expression-ecrite') => __('Expression écrite'),
+                    route('epreuve', 'expression-orale') => __('Expression orale'),
                 ],
                 'Edumica' => [
-                    route('tests-blancs') => 'Tests blancs',
-                    route('scores') => 'Scores NCLC',
-                    route('tarifs') => 'Tarifs',
-                    route('faq') => 'Questions fréquentes',
-                    route('contact') => 'Contact',
+                    route('tests-blancs') => __('Tests blancs'),
+                    route('scores') => __('Scores NCLC'),
+                    route('tarifs') => __('Tarifs'),
+                    route('articles') => __('Articles'),
+                    route('faq') => __('Questions fréquentes'),
+                    route('contact') => __('Contact'),
                 ],
-                'Informations' => [
-                    route('mentions-legales') => 'Mentions légales',
-                    route('cgv') => 'CGV',
-                    route('confidentialite') => 'Confidentialité',
+                __('Informations') => [
+                    route('mentions-legales') => __('Mentions légales'),
+                    route('cgv') => __('CGV'),
+                    route('confidentialite') => __('Confidentialité'),
                 ],
             ] as $titre => $liens)
                 <div class="hidden flex-col gap-1 md:flex">
@@ -37,12 +38,13 @@
         </div>
 
         <div class="flex flex-wrap gap-x-5 font-semibold md:hidden">
-            <a href="{{ route('contact') }}" wire:navigate class="py-3 text-foret">Contact</a>
-            <a href="{{ route('mentions-legales') }}" wire:navigate class="py-3 text-foret">Mentions légales</a>
-            <a href="{{ route('cgv') }}" wire:navigate class="py-3 text-foret">CGV</a>
-            <a href="{{ route('confidentialite') }}" wire:navigate class="py-3 text-foret">Confidentialité</a>
+            <a href="{{ route('articles') }}" wire:navigate class="py-3 text-foret">{{ __('Articles') }}</a>
+            <a href="{{ route('contact') }}" wire:navigate class="py-3 text-foret">{{ __('Contact') }}</a>
+            <a href="{{ route('mentions-legales') }}" wire:navigate class="py-3 text-foret">{{ __('Mentions légales') }}</a>
+            <a href="{{ route('cgv') }}" wire:navigate class="py-3 text-foret">{{ __('CGV') }}</a>
+            <a href="{{ route('confidentialite') }}" wire:navigate class="py-3 text-foret">{{ __('Confidentialité') }}</a>
         </div>
 
-        <p class="hidden border-t-[1.5px] border-ligne pt-6 text-sm md:block">© Edumica · Non affiliée à France Éducation international. TCF est une marque de France Éducation international. Tests d'entraînement non officiels.</p>
+        <p class="hidden border-t-[1.5px] border-ligne pt-6 text-sm md:block">{{ __('© Edumica · Non affiliée à France Éducation international. TCF est une marque de France Éducation international. Tests d\'entraînement non officiels.') }}</p>
     </div>
 </footer>

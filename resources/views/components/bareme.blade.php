@@ -5,13 +5,13 @@
 
 <div {{ $attributes }}>
     <div @class(['w-full overflow-hidden rounded-3xl border-[1.5px] border-ligne', 'hidden md:block' => $mobile])>
-        <table class="w-full border-collapse text-left text-base">
-            <caption class="sr-only">Scores du TCF Canada par niveau NCLC</caption>
+        <table class="w-full border-collapse text-start text-base">
+            <caption class="sr-only">{{ __('Scores du TCF Canada par niveau NCLC') }}</caption>
             <thead>
                 <tr class="bg-brume">
                     <th scope="col" class="px-5 py-4 font-bold">NCLC</th>
                     @foreach ($codes as $code)
-                        <th scope="col" class="px-5 py-4 font-bold">{{ \App\Support\Nclc::EPREUVES[$code][1] }}</th>
+                        <th scope="col" class="px-5 py-4 font-bold">{{ \App\Support\Nclc::libelleCourt($code) }}</th>
                     @endforeach
                 </tr>
             </thead>
@@ -39,13 +39,13 @@
                     <div class="flex items-center justify-between">
                         <div class="font-titre text-xl">NCLC {{ $niveau }}</div>
                         @if ((string) $niveau === $cible)
-                            <div class="rounded-full bg-peche px-2.5 py-1 text-[13px] font-extrabold">Ton objectif</div>
+                            <div class="rounded-full bg-peche px-2.5 py-1 text-[13px] font-extrabold">{{ __('Ton objectif') }}</div>
                         @endif
                     </div>
                     <dl class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-[15px]">
                         @foreach ($codes as $code)
                             <div class="flex flex-col">
-                                <dt class="text-[13px] text-mousse">{{ \App\Support\Nclc::EPREUVES[$code][1] }}</dt>
+                                <dt class="text-[13px] text-mousse">{{ \App\Support\Nclc::libelleCourt($code) }}</dt>
                                 <dd class="font-bold tabular-nums">{{ \App\Support\Nclc::plage($plages[$code]) }}</dd>
                             </div>
                         @endforeach

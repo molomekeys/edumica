@@ -167,14 +167,15 @@ class GuideEpreuve
     ];
 
     /** @return array<string, mixed> */
+    /** Contenu d'une épreuve, traduit dans la langue de l'interface. */
     public static function pour(string $code): array
     {
-        return self::CONTENU[$code];
+        return Langue::traduire(self::CONTENU[$code]);
     }
 
     public static function duree(string $code): string
     {
-        return self::CONTENU[$code]['duree'];
+        return __(self::CONTENU[$code]['duree']);
     }
 
     /** Palier CECRL => plage de scores, pour une épreuve. */

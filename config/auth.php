@@ -114,4 +114,21 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Compte administrateur
+    |--------------------------------------------------------------------------
+    |
+    | Le seul compte admin, créé par le UtilisateurSeeder et connecté par
+    | courriel + mot de passe. Valeurs fictives par défaut : définir
+    | ADMIN_EMAIL et ADMIN_PASSWORD dans le .env pour le vrai compte.
+    |
+    */
+
+    'admin' => [
+        'name' => env('ADMIN_NAME', 'Admin Edumica'),
+        'email' => env('ADMIN_EMAIL', 'admin@edumica.test'),
+        'password' => env('ADMIN_PASSWORD', 'admin-edumica'),
+    ],
+
 ];

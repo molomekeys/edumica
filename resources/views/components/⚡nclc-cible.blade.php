@@ -26,7 +26,7 @@ new class extends Component
 ?>
 
 <div class="flex flex-col gap-3.5">
-    <div role="group" aria-label="NCLC cible" class="grid grid-cols-6 gap-1.5">
+    <div role="group" aria-label="{{ __('NCLC cible') }}" class="grid grid-cols-6 gap-1.5">
         @foreach (Nclc::niveaux() as $niveau)
             <button type="button" wire:click="choisir('{{ $niveau }}')" aria-pressed="{{ $niveau === $cible ? 'true' : 'false' }}" aria-label="NCLC {{ $niveau }}" @class([
                 'h-12 rounded-[14px] text-base transition-colors',
@@ -47,5 +47,5 @@ new class extends Component
         @endforeach
     </div>
 
-    <p class="text-[13px] leading-normal text-mousse">Minimum par épreuve selon le barème IRCC. Vérifie le niveau exigé par ton programme.</p>
+    <p class="text-[13px] leading-normal text-mousse">{{ __('Minimum par épreuve selon le barème IRCC. Vérifie le niveau exigé par ton programme.') }}</p>
 </div>

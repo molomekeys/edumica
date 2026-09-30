@@ -41,7 +41,10 @@ class Faq
         ['Le TCF', 0], ['Les tests blancs', 0], ['Le TCF', 1], ['Les tests blancs', 1], ['Compte et paiement', 0],
     ];
 
-    /** @return list<array{0: string, 1: string}> */
+    /** Questions d'un thème, en français : le composant site.faq les traduit à l'affichage.
+     *
+     * @return list<array{0: string, 1: string}>
+     */
     public static function theme(string $theme): array
     {
         return self::THEMES[$theme][1];

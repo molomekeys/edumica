@@ -1,32 +1,39 @@
 document.addEventListener('alpine:init', () => {
-    /**
-     * Fait apparaître l'élément quand il entre dans l'écran (voir .est-visible dans app.css).
-     * Le décalage se règle avec la variable CSS --delai.
-     */
-    window.Alpine.directive('apparition', (el, _, { cleanup }) => {
-        if (!('IntersectionObserver' in window)) {
-            el.classList.add('est-visible');
-            return;
-        }
-
-        const observateur = new IntersectionObserver(
-            (entrees) => {
-                if (entrees.some((entree) => entree.isIntersecting)) {
-                    el.classList.add('est-visible');
-                    observateur.disconnect();
-                }
-            },
-            { rootMargin: '0px 0px -8% 0px' },
-        );
-
-        observateur.observe(el);
-        cleanup(() => observateur.disconnect());
-    });
-
     const format = (secondes) => {
         const s = Math.max(0, Math.round(secondes));
         return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
     };
+
+    /**
+     * Menu déroulant de l'en-tête : s'ouvre au clic ou au survol (avec un court délai à la sortie
+     * pour laisser le temps de rejoindre le panneau), se ferme au clic dehors, à Échap ou quand le focus sort.
+     */
+    window.Alpine.data('deroulant', () => ({
+        ouvert: false,
+        survol: false,
+        delai: null,
+        entrer() {
+            clearTimeout(this.delai);
+            this.survol = this.ouvert = true;
+        },
+        sortir() {
+            clearTimeout(this.delai);
+            this.survol = false;
+            this.delai = setTimeout(() => (this.ouvert = false), 150);
+        },
+        // Sous la souris, le survol a déjà ouvert le panneau : le clic ne doit pas le refermer.
+        basculer() {
+            clearTimeout(this.delai);
+            this.ouvert = this.survol || !this.ouvert;
+        },
+        fermer(focus = false) {
+            this.ouvert = false;
+            focus && this.$refs.bouton.focus();
+        },
+        quitter(event) {
+            this.$el.contains(event.relatedTarget) || (this.ouvert = false);
+        },
+    }));
 
     /**
      * Compte à rebours du quiz, calé sur une échéance fixée par le serveur.
