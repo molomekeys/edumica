@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -10,10 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         // Un déploiement interrompu peut laisser la table créée sans que la
-        // migration soit enregistrée (MySQL ne rejoue pas le DDL) : on repart
-        // de zéro tant qu'elle ne contient rien.
-        if (Schema::hasTable('articles') && DB::table('articles')->doesntExist()) {
-            Schema::drop('articles');
+        // migration soit enregistrée (MySQL ne rejoue pas le DDL) : on ne la
+        // recrée pas, on complète seulement les contraintes manquantes.
+        if (Schema::hasTable('articles')) {
+            $this->completerTableExistante();
+
+            return;
         }
 
         Schema::create('articles', function (Blueprint $table) {
@@ -39,5 +40,25 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('articles');
+    }
+
+    private function completerTableExistante(): void
+    {
+        $sansCleEtrangere = collect(Schema::getForeignKeys('articles'))
+            ->doesntContain(fn (array $cle) => $cle['columns'] === ['user_id']);
+
+        Schema::table('articles', function (Blueprint $table) use ($sansCleEtrangere) {
+            if (! Schema::hasIndex('articles', ['slug'], 'unique')) {
+                $table->unique('slug');
+            }
+
+            if (! Schema::hasIndex('articles', ['statut', 'publie_le'])) {
+                $table->index(['statut', 'publie_le']);
+            }
+
+            if ($sansCleEtrangere) {
+                $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
+            }
+        });
     }
 };
